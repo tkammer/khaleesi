@@ -1,0 +1,48 @@
+---
+- name: Setup packstack on controller
+  hosts: controller
+  gather_facts: no
+  sudo: yes
+  tasks:
+      - name: Install packstack package
+        yum: name=openstack-packstack state=present
+
+
+      - name: Generate answer file
+        shell: "packstack --gen-answer-file={{ packstack.answer_file }}"
+
+      - name: create packstack answer-file from the config
+        lineinfile:
+            dest={{ packstack.answer_file }}
+            regexp='{{ item.key }}=.*'
+            line='{{ item.key }}={{ item.value }}'
+        with_dict: packstack.config
+
+      - name: Update answer file with default password
+        command:
+          sed
+              -e 's|_PASSWORD=.*|_PASSWORD=redhat|'
+              -e 's|_PW=.*|_PW=redhat|'
+              -i {{ packstack.answer_file }}
+
+      - name: Update network hosts
+        replace:
+            dest={{ packstack.answer_file }}
+            regexp=^CONFIG_NETWORK_HOSTS=.*$
+            replace=CONFIG_NETWORK_HOSTS="{% for host in groups.networker %}{{ hostvars[host]['ansible_default_ipv4']['address'] }}{% if not loop.last %},{% endif %}{% endfor %}"
+
+      - name: Update compute hosts
+        replace:
+            dest={{ packstack.answer_file }}
+            regexp=^CONFIG_COMPUTE_HOSTS=.*$
+            replace=CONFIG_COMPUTE_HOSTS="{% for host in groups.compute %}{{ hostvars[host]['ansible_default_ipv4']['address'] }}{% if not loop.last %},{% endif %}{% endfor %}"
+
+# packstack_run
+- name: Run packstack
+  hosts: controller
+  sudo: yes
+  tasks:
+    - name: Running packstack
+      shell: packstack --answer-file={{ packstack.answer_file }}
+      async: 2000
+      poll: 10

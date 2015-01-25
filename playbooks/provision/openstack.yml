@@ -1,0 +1,89 @@
+---
+- name: Create nodes - OpenStack
+  hosts: localhost
+  gather_facts: no
+  vars:
+    - mgmt_network_name: "{{ provisioner.network.nic.net_1.name }}"
+  handlers:
+    - include: "{{ lookup('env','PWD') }}/handlers/system/handlers.yml"
+  tasks:
+    - name: Create nodes
+      nova_compute:
+           auth_url: "{{ provisioner.url }}"
+           state: present
+           login_username: "{{ provisioner.username }}"
+           login_password: "{{ provisioner.password }}"
+           login_tenant_name: "{{ provisioner.tenant_name }}"
+           name: "{{ item.value.name }}"
+           image_id: "{{ item.value.image_id }}"
+           key_name: "{{ provisioner.key_name }}"
+           flavor_id: "{{ item.value.flavor_id }}"
+           nics: "{{ item.value.nics }}"
+           config_drive: True
+      retries: 4
+      delay: 60
+      with_dict: nodes
+      register: created_nodes
+
+    - set_fact: new_nodes="{{ created_nodes.results|list }}"
+
+    - include: "network/{{ provisioner.network.type }}_floating_ip.yml"
+      when: provisioner.use_floating_ip|bool
+
+    - name: Update nodes with floating IP if necessery
+      nova_compute:
+           auth_url: "{{ provisioner.url }}"
+           state: present
+           login_username: "{{ provisioner.username }}"
+           login_password: "{{ provisioner.password }}"
+           login_tenant_name: "{{ provisioner.tenant_name }}"
+           name: "{{ item.value.name }}"
+           image_id: "{{ item.value.image_id }}"
+           key_name: "{{ provisioner.key_name }}"
+           flavor_id: "{{ item.value.flavor_id }}"
+           nics: "{{ item.value.nics }}"
+           config_drive: True
+      retries: 4
+      delay: 60
+      with_dict: nodes
+      register: created_nodes
+      when: provisioner.use_floating_ip|bool
+
+    - set_fact: new_nodes="{{ created_nodes.results|list }}"
+      when: provisioner.use_floating_ip|bool
+
+    - name: Add created hosts to host list
+      add_host:
+        name="{{ item.item.value.name }}"
+        groups="{{ item.item.value.groups
+            if item.item.value.groups is string
+            else item.item.value.groups| join(',') }}"
+        ansible_fqdn="{{ item.item.value.hostname }}"
+        ansible_ssh_user="{{ item.item.value.remote_user }}"
+        ansible_ssh_private_key_file="{{ provisioner.key_file }}"
+        ansible_ssh_host={%- for address in item.info.addresses[mgmt_network_name] %}{% if address['OS-EXT-IPS:type'] == 'floating' or not provisioner.use_floating_ip|bool %}{{address.addr}}{% endif %}{%- endfor %}
+        provisioner_host_addresses="{{ item.info.addresses|to_json }}"
+      with_items: new_nodes
+      notify:
+        - Wait for SSH
+        - Fail if any machine fail
+
+- name: Update network interfaces on nodes - OpenStack
+  hosts: openstack_nodes
+  gather_facts: yes
+  sudo: yes
+  handlers:
+    - include: "{{ lookup('env','PWD') }}/handlers/system/handlers.yml"
+  tasks:
+    - name: Setup networking (interfaces)
+      template:
+            src: templates/ifcfg-interface.j2
+            dest: /etc/sysconfig/network-scripts/ifcfg-{{ item.interface }}
+            owner: root
+            group: root
+            mode: 644
+      with_items: nodes.controller.net_interfaces
+      notify:
+        - Reboot machines
+        - Wait for SSH
+        - Fail if any machine fail

@@ -1,0 +1,19 @@
+---
+- name: Reboot machines
+  shell: sleep 2 && shutdown -r now
+  async: 100
+  poll: 0
+
+- name: Wait for SSH
+  local_action:
+      module: wait_for
+          host={{ hostvars[inventory_hostname].ansible_ssh_host }}
+          delay=10
+          port=22
+          state=started
+  sudo: no
+  register: wait_for_ssh
+
+- name: Fail if any machine fail
+  fail: msg="Could not contact one of the nodes"
+  when: wait_for_ssh|failed

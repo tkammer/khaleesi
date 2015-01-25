@@ -1,0 +1,66 @@
+---
+- name: Install tempest dependencies on the machine
+  hosts: tempest
+  sudo: yes
+  tasks:
+    - name: Install release tool rpm for dependencies (python-ironicclient) on machines
+      command: yum -y localinstall http://repos.fedorapeople.org/repos/openstack/openstack-icehouse/rdo-release-icehouse-4.noarch.rpm
+
+    - name: Create the tempest Repository
+      template: src=../templates/tempest.repo.j2 dest=/etc/yum.repos.d/tempest.repo
+
+    - name: Install tempest rpm
+      yum: name=openstack-tempest-{{ tempest.rdo.version }}-{{ tempest.rpm.version }} state=present
+
+    - name: Install needed packages on machine
+      yum: name={{ item }} state=present
+      with_items:
+        - facter
+        - gcc
+        - git
+        - libffi-devel
+        - libxml2-devel
+        - libxslt-devel
+        - mariadb-devel
+        - openssl-devel
+        - python-pip
+        - python-virtualenv
+
+- name: Install tempest on the machine
+  hosts: tempest
+  gather_facts: no
+  sudo: yes
+  tasks:
+    - debug: var={{ tempest }}
+    - name: Clone tempest from git repo
+      git: repo={{ tempest.git.repo }} version={{ tempest.git.revision }}
+           dest={{ tempest.dir }}
+
+      # This URL should be in the config file (khaleesi settings)
+    - name: Download cirros image
+      get_url: url=http://download.cirros-cloud.net/0.3.1/cirros-0.3.1-x86_64-disk.img dest={{ tempest.dir }}/etc/{{ tempest.cirros_image_file }} mode=0440
+
+    - name: install virtualenv
+      command: "python {{ tempest.dir }}/tools/install_venv.py {{ tempest.dir }}"
+
+    - name: pip install junitxml, unittest2, testtools
+      pip: name={{ item }} virtualenv={{ tempest.dir }}/.venv
+      with_items:
+        - junitxml
+        - unittest2
+        - nose
+
+    - name: pip install testtools, specific version
+      pip: name={{ item.name }} version={{ item.version }}
+           virtualenv={{ tempest.dir }}/.venv
+      with_items:
+        - { name: testtools, version: '0.9.34' }
+        - { name: python-subunit, version: '0.0.15'}
+        - { name: python-ceilometerclient, version: '1.0.10'}   # fix: tempest failure
+
+    - name: pip install requirements
+      pip: requirements={{ tempest.dir }}/{{ item }}
+           virtualenv={{ tempest.dir }}/.venv
+      with_items:
+        - requirements.txt
+        - test-requirements.txt
