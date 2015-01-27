@@ -1,3 +1,0 @@
----
-- name: Ensure Openstack utils is installed
-  yum: name=openstack-utils state=latest

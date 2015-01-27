@@ -1,5 +1,5 @@
 ---
-- name: Assign floating ip - {{ provisioner.network.type }}
+- name: Assign floating ip
   nova_floating_ip:
        auth_url: "{{ provisioner.url }}"
        state: present
