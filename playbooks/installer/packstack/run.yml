@@ -7,7 +7,6 @@
       - name: Install packstack package
         yum: name=openstack-packstack state=present
 
-
       - name: Generate answer file
         shell: "packstack --gen-answer-file={{ packstack.answer_file }}"
 

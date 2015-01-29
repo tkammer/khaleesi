@@ -8,9 +8,8 @@
   local_action:
       module: wait_for
           host={{ hostvars[inventory_hostname].ansible_ssh_host }}
-          delay=10
-          port=22
-          state=started
+          state=present
+          path=/etc/hosts
   sudo: no
   register: wait_for_ssh
 
