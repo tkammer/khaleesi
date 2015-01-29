@@ -43,5 +43,5 @@
   tasks:
     - name: Running packstack
       shell: packstack --answer-file={{ packstack.answer_file }}
-      async: 2000
+      async: 3000
       poll: 10

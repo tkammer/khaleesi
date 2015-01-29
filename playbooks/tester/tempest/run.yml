@@ -15,7 +15,7 @@
       - name: Create external network - neutron
         quantum_network:
             state: present
-            auth_url: "{{ hostvars[nodes.controller.name].ansible_default_ipv4.address }}"
+            auth_url: "http://{{ hostvars[nodes.controller.name].ansible_default_ipv4.address }}:35357/v2.0/"
             login_username: admin
             login_password: "{{ hostvars[nodes.controller.name].admin_password | default('redhat') }}"
             login_tenant_name: admin
@@ -30,7 +30,7 @@
       - name: Create subnet for external network - neutron
         quantum_subnet:
             state: present
-            auth_url: "{{ hostvars[nodes.controller.name].ansible_default_ipv4.address }}"
+            auth_url: "http://{{ hostvars[nodes.controller.name].ansible_default_ipv4.address }}:35357/v2.0/"
             login_username: admin
             login_password: "{{ hostvars[nodes.controller.name].admin_password | default('redhat') }}"
             login_tenant_name: admin
@@ -43,9 +43,13 @@
             allocation_pool_start: "{{ tempest.public_allocation_start }}"
             allocation_pool_end: "{{ tempest.public_allocation_end }}"
 
-- name: Create tempest config file
+- name: Run tempest
   hosts: tempest
   gather_facts: no
   tasks:
       - name: generate tempest.conf
         shell: chdir="{{ tempest.dir }}" python {{ tempest.dir }}/tools/config_tempest.py --out {{ tempest.dir }}/etc/tempest.conf --debug  --create identity.uri http://{{ hostvars[nodes.controller.name].ansible_default_ipv4.address }}:5000/v2.0/ compute.allow_tenant_isolation true object-storage.operator_role SwiftOperator identity.admin_password {{ hostvars[nodes.controller.name].admin_password|default('redhat') }} identity.password {{ hostvars[nodes.controller.name].demo_password|default('secrete') }}
+
+      - name: run tempest
+        shell: chdir="{{ tempest.dir }}" {{ tempest.dir }}/tools/run-tests.sh tempest.scenario
+        ignore_errors: True

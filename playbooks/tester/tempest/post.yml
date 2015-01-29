@@ -1,3 +1,7 @@
 ---
-- name: Post tasks
-  hosts: all
+- name: Fetch results
+  hosts: tempest
+  gather_facts: no
+  tasks:
+    -  fetch: src={{ tempest.dir }}/nosetests.xml
+              dest=nosetests.xml flat=yes

@@ -6,7 +6,7 @@
     - name: Install release tool rpm for dependencies (python-ironicclient) on machines
       command: yum -y localinstall http://repos.fedorapeople.org/repos/openstack/openstack-icehouse/rdo-release-icehouse-4.noarch.rpm
 
-    - name: Install tempest rpm
+    - name: Install tempest rpm for dependencies
       yum: name=openstack-tempest-{{ tempest.rdo.version }}-{{ tempest.rpm.version }} state=present
 
     - name: Install needed packages on machine
@@ -29,10 +29,6 @@
     - name: Clone tempest from git repo
       git: repo={{ tempest.git.repo }} version={{ tempest.git.revision }}
            dest={{ tempest.dir }}
-
-      # This URL should be in the config file (khaleesi settings)
-    - name: Download cirros image
-      get_url: url=http://download.cirros-cloud.net/0.3.1/cirros-0.3.1-x86_64-disk.img dest={{ tempest.dir }}/etc/{{ tempest.cirros_image_file }} mode=0440
 
     - name: install virtualenv
       command: "python {{ tempest.dir }}/tools/install_venv.py {{ tempest.dir }}"
