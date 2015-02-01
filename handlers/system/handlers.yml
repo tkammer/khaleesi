@@ -1,15 +1,16 @@
 ---
 - name: Reboot machines
-  shell: sleep 2 && shutdown -r now
-  async: 100
+  shell: shutdown -r now
+  async: 0
   poll: 0
+  ignore_errors: true
 
 - name: Wait for SSH
   local_action:
       module: wait_for
           host={{ hostvars[inventory_hostname].ansible_ssh_host }}
-          state=present
-          path=/etc/hosts
+          port=22
+          state=started
   sudo: no
   register: wait_for_ssh
 
