@@ -21,7 +21,6 @@
            nics: "{{ item.value.nics }}"
            config_drive: True
       retries: 4
-      delay: 60
       with_dict: nodes
       register: created_nodes
 
@@ -44,7 +43,7 @@
            nics: "{{ item.value.nics }}"
            config_drive: True
       retries: 4
-      delay: 60
+      delay: 20
       with_dict: nodes
       register: created_nodes
       when: provisioner.use_floating_ip|bool
@@ -70,7 +69,6 @@
 
 - name: Update network interfaces on nodes - OpenStack
   hosts: openstack_nodes
-  gather_facts: yes
   sudo: yes
   handlers:
     - include: "{{ lookup('env','PWD') }}/handlers/system/handlers.yml"
