@@ -1,6 +1,6 @@
 ---
 - name: Reboot machines
-  shell: shutdown -r now
+  shell: shutdown -r now && exit
   async: 0
   poll: 0
   ignore_errors: true
