@@ -12,6 +12,7 @@
           host={{ hostvars[inventory_hostname].ansible_ssh_host }}
           port=22
           state=started
+          timeout=300
   sudo: no
   register: wait_for_ssh
 
