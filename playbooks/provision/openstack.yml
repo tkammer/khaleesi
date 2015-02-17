@@ -43,7 +43,6 @@
            nics: "{{ item.value.nics }}"
            config_drive: True
       retries: 4
-      delay: 20
       with_dict: nodes
       register: created_nodes
       when: provisioner.use_floating_ip|bool
@@ -63,9 +62,9 @@
         ansible_ssh_host={%- for address in item.info.addresses[mgmt_network_name] %}{% if address['OS-EXT-IPS:type'] == 'floating' or not provisioner.use_floating_ip|bool %}{{address.addr}}{% endif %}{%- endfor %}
         provisioner_host_addresses="{{ item.info.addresses|to_json }}"
       with_items: new_nodes
-      notify:
-        - Wait for SSH
-        - Fail if any machine fail
+
+    - name: wait for hosts to come up
+      pause: seconds=60
 
 - name: Update network interfaces on nodes - OpenStack
   hosts: openstack_nodes

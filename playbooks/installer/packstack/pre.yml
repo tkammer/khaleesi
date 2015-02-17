@@ -41,10 +41,12 @@
     - name: copy ssh-key to nodes
       authorized_key: user=root key="{{ lookup('file', '/tmp/ssh_keys/id_rsa.pub') }}"
 
-- name: Disable NetworkManager
+- name: Updating the Network services
   hosts: openstack_nodes:!tempest
   gather_facts: no
   sudo: yes
   tasks:
-    - name: Disabling NetworkManager
-      service: name=NetworkManager state=stopped enabled=no
+    - name: Remove NetworkManager
+      yum: name=NetworkManager state=absent
+    - name: Enabling the network service
+      service: name=network state=started enabled=yes
