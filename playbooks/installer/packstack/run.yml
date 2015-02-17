@@ -48,6 +48,5 @@
             replace=CONFIG_COMPUTE_HOSTS="{% for host in groups.compute %}{{ hostvars[host]['ansible_default_ipv4']['address'] }}{% if not loop.last %},{% endif %}{% endfor %}"
 
       - name: Running packstack
-        shell: packstack --answer-file={{ packstack.answer_file }}
-        async: 3000
-        poll: 10
+        shell: "packstack --answer-file={{ packstack.answer_file }}"
+        register: result
