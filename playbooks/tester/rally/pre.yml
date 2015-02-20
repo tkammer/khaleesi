@@ -1,0 +1,74 @@
+---
+- name: Install Rally dependencies on the machine
+  hosts: tester
+  sudo: yes
+  tasks:
+    - name: Install needed packages on machine
+      yum: name={{ item }} state=present
+      with_items:
+        - git
+        - which
+
+- name: Install Rally on the machine
+  hosts: tester
+  sudo: yes
+  tasks:
+    - name: Clone Rally from git repo
+      git: repo={{ rally.git.repo }} version={{ rally.git.revision }}
+           dest={{ rally.dir }}
+
+      # This URL should be in the config file (khaleesi settings)
+    - name: Download cirros image
+      get_url: url=http://download.cirros-cloud.net/0.3.1/cirros-0.3.1-x86_64-disk.img dest={{ rally.dir }}/etc/{{ rally.cirros_image_file }} mode=0440
+
+    - name: Run Rally installation script
+      shell: "{{ rally.dir }}/install_rally.sh -v"
+      args:
+        creates: "{{ rally.path }}/rally"
+
+
+- name: Prepare Openstack
+  hosts: controller
+  tasks:
+    - name: Create Glance Image
+      glance_image:
+        login_username: admin
+        login_password: "{{ hostvars[nodes.controller.name].admin_password | default('redhat') }}"
+        login_tenant_name: admin
+        name: cirros-0.3.3-x86_64-uec
+#        disk_format: ami
+        state: present
+        copy_from: http://download.cirros-cloud.net/0.3.3/cirros-0.3.3-x86_64-disk.img
+
+    # THIS NEEDS TO BE CHANGED - Network params should be in the config
+    - name: Create external network - neutron
+      quantum_network:
+          state: present
+          login_username: admin
+          login_password: "{{ hostvars[nodes.controller.name].admin_password | default('redhat') }}"
+          login_tenant_name: admin
+          name: external
+          provider_network_type: flat
+          provider_physical_network: myphysnet
+          router_external: yes
+          shared: no
+          admin_state_up: yes
+      when: "'{{ installer.network.plugin.name }}' == 'neutron'"
+      register: network
+
+    - debug: msg="network id is {{ network.id }}"
+
+    - name: Create subnet for external network - neutron
+      quantum_subnet:
+          state: present
+          login_username: admin
+          login_password: "{{ hostvars[nodes.controller.name].admin_password | default('redhat') }}"
+          login_tenant_name: admin
+          tenant_name: admin
+          network_name: external
+          name: external-subnet
+          enable_dhcp: False
+          gateway_ip: "{{ rally.public_subnet_gateway }}"
+          cidr: "{{ rally.public_subnet_cidr}}"
+          allocation_pool_start: "{{ rally.public_allocation_start }}"
+          allocation_pool_end: "{{ rally.public_allocation_end }}"
