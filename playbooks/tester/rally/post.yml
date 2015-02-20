@@ -1,0 +1,49 @@
+---
+- name: Tempest with Rally - Post tasks
+  hosts: tester
+  tasks:
+    - name: Create Output Directory
+      file: path={{ rally.outputdir }} state=directory
+
+# TODO(yfried): fix relative link in index so they point to the right path and don't use gz files
+#    - name: Create nice index
+#      shell: "{{ rally.path }}/python rally/ui/utils.py render tests/ci/rally-gate/index.mako >  {{ rally.outputdir }}/index.html"
+#      args:
+#        creates: "{{ rally.outputdir }}/index.html"
+#        chdir: "{{ rally.dir }}"
+
+#    - name: Create Report
+#      command: "{{ rally.path }}/rally verify report --out {{ rally.outputdir }}/tempest_results.html"
+#      args:
+#        creates: "{{ rally.outputdir }}/tempest_results.html"
+#        chdir: "{{ rally.dir }}"
+
+    - name: JSON and HTML results
+      shell: "{{ rally.path }}/rally verify results --{{ item }} --output-file {{ rally.outputdir }}/tempest_results.{{ item }}"
+      args:
+        creates: "{{ rally.outputdir }}/tempest_results.{{ item }}"
+        chdir: "{{ rally.dir }}"
+      with_items:
+        - html
+        - json
+
+    - name: TXT results
+      shell: "{{ rally.path }}/rally verify show > {{ rally.outputdir }}/tempest_results.txt"
+      args:
+        creates: "{{ rally.outputdir }}/tempest_results.txt"
+        chdir: "{{ rally.dir }}"
+
+    - name: TXT results detailes
+      shell: "{{ rally.path }}/rally verify show --detailed > {{ rally.outputdir }}/tempest_results_detailed.txt"
+      args:
+        creates: "{{ rally.outputdir }}/tempest_results_detailed.txt"
+        chdir: "{{ rally.dir }}"
+
+    - name: Fetch Results
+      fetch: src={{ item }} dest={{ rally.local_results }}/ fail_on_missing=yes
+      with_items:
+#        - "{{ rally.outputdir }}/index.html"
+        - "{{ rally.outputdir }}/tempest_results.html"
+        - "{{ rally.outputdir }}/tempest_results.json"
+        - "{{ rally.outputdir }}/tempest_results.txt"
+        - "{{ rally.outputdir }}/tempest_results_detailed.txt"
