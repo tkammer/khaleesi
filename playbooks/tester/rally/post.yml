@@ -38,8 +38,16 @@
       shell: "{{ rally.path }}/rally task sla_check > {{ rally.outputdir }}/sla.txt"
       args:
         creates: "{{ rally.outputdir }}/sla.txt"
-      register: sla_check
+#      register: sla_check
       ignore_errors: True
+
+    - name: SLA Check JSON
+      shell: "{{ rally.path }}/rally task sla_check --json > {{ rally.outputdir }}/sla.json"
+      args:
+        creates: "{{ rally.outputdir }}/sla.json"
+#      register: sla_check
+      ignore_errors: True
+
 
 # These need to be archived by Jenkins Somehow
     - name: Fetch Results
@@ -51,3 +59,4 @@
         - "{{ rally.outputdir }}/detailed.txt"
         - "{{ rally.outputdir }}/detailed_with_iterations.txt"
         - "{{ rally.outputdir }}/sla.txt"
+        - "{{ rally.outputdir }}/sla.json"
