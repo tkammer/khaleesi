@@ -40,7 +40,7 @@
         state: present
         copy_from: http://download.cirros-cloud.net/0.3.3/cirros-0.3.3-x86_64-disk.img
 
-    # THIS NEEDS TO BE CHANGED - Network params should be in the config
+    # TODO(yfried): THIS NEEDS TO BE CHANGED - Network params should be in the config
     - name: Create external network - neutron
       quantum_network:
           state: present

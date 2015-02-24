@@ -1,35 +1,52 @@
 ---
-- name: Tempest with Rally - Post tasks
+- name: Rally Scenarios - Post tasks
   hosts: tester
   tasks:
     - name: Create Output Directory
       file: path={{ rally.outputdir }} state=directory
 
-    - name: JSON and HTML results
-      shell: "{{ rally.path }}/rally verify results --{{ item }} --output-file {{ rally.outputdir }}/tempest_results.{{ item }}"
-      args:
-        creates: "{{ rally.outputdir }}/tempest_results.{{ item }}"
-        chdir: "{{ rally.dir }}"
-      with_items:
-        - html
-        - json
+# TODO(yfried): fix relative link in index so they point to the right path and don't use gz files
+#    - name: Create nice index
+#      shell: "{{ rally.path }}/python rally/ui/utils.py render tests/ci/rally-gate/index.mako >  {{ rally.outputdir }}/index.html"
+#      args:
+#        creates: "{{ rally.outputdir }}/index.html"
+#        chdir: "{{ rally.dir }}"
 
-    - name: TXT results
-      shell: "{{ rally.path }}/rally verify show > {{ rally.outputdir }}/tempest_results.txt"
+    - name: Create Report
+      command: "{{ rally.path }}/rally task report --out {{ rally.outputdir }}/results.html"
       args:
-        creates: "{{ rally.outputdir }}/tempest_results.txt"
+        creates: "{{ rally.outputdir }}/results.html"
         chdir: "{{ rally.dir }}"
 
-    - name: TXT results detailes
-      shell: "{{ rally.path }}/rally verify show --detailed > {{ rally.outputdir }}/tempest_results_detailed.txt"
+    - name: JSON results
+      shell: "{{ rally.path }}/rally task results | {{ rally.path }}/python -m json.tool > {{ rally.outputdir }}/results.json"
       args:
-        creates: "{{ rally.outputdir }}/tempest_results_detailed.txt"
+        creates: "{{ rally.outputdir }}/results.json"
         chdir: "{{ rally.dir }}"
 
-    - name: Fetch Results
-      fetch: src={{ item }} dest={{ rally.local_results }}/ fail_on_missing=yes
-      with_items:
-        - "{{ rally.outputdir }}/tempest_results.html"
-        - "{{ rally.outputdir }}/tempest_results.json"
-        - "{{ rally.outputdir }}/tempest_results.txt"
-        - "{{ rally.outputdir }}/tempest_results_detailed.txt"
+    - name: Iteration Data
+      shell: "{{ rally.path }}/rally task detailed > {{ rally.outputdir }}/detailed.txt"
+      args:
+        creates: "{{ rally.outputdir }}/detailed.txt"
+
+    - name: Detatiled Iteration Data
+      shell: "{{ rally.path }}/rally task detailed --iterations-data > {{ rally.outputdir }}/detailed_with_iterations.txt"
+      args:
+        creates: "{{ rally.outputdir }}/detailed_with_iterations.txt"
+
+    - name: SLA Check
+      shell: "{{ rally.path }}/rally task sla_check > {{ rally.outputdir }}/sla.txt"
+      args:
+        creates: "{{ rally.outputdir }}/sla.txt"
+      register: sla_check
+      ignore_errors: True
+
+# These need to be archived by Jenkins Somehow
+#    - name: Fetch Results
+#      fetch: src={{ item }} dest={{ rally.local_results }}/ fail_on_missing=yes
+#      with_items:
+##        - "{{ rally.outputdir }}/index.html"
+#        - "{{ rally.outputdir }}/results.html"
+#        - "{{ rally.outputdir }}/detailed.txt"
+#        - "{{ rally.outputdir }}/detailed_with_iterations.txt"
+#        - "{{ rally.outputdir }}/sla.txt"
