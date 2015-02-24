@@ -42,11 +42,12 @@
       ignore_errors: True
 
 # These need to be archived by Jenkins Somehow
-#    - name: Fetch Results
-#      fetch: src={{ item }} dest={{ rally.local_results }}/ fail_on_missing=yes
-#      with_items:
-##        - "{{ rally.outputdir }}/index.html"
-#        - "{{ rally.outputdir }}/results.html"
-#        - "{{ rally.outputdir }}/detailed.txt"
-#        - "{{ rally.outputdir }}/detailed_with_iterations.txt"
-#        - "{{ rally.outputdir }}/sla.txt"
+    - name: Fetch Results
+    # Assumes env has $WORKSPACE defined like in Jenkins
+      fetch: src={{ item }} dest="{{ lookup('env','WORKSPACE') }}/rally_results/" fail_on_missing=yes flat=yes
+      with_items:
+#        - "{{ rally.outputdir }}/index.html"
+        - "{{ rally.outputdir }}/results.html"
+        - "{{ rally.outputdir }}/detailed.txt"
+        - "{{ rally.outputdir }}/detailed_with_iterations.txt"
+        - "{{ rally.outputdir }}/sla.txt"
