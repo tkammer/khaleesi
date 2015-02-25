@@ -1,7 +1,7 @@
 ---
 - name: Create keystonerc
   hosts:
-      - tester
+      - tempest
       - controller
   sudo: yes
   tasks:
@@ -44,7 +44,7 @@
             allocation_pool_end: "{{ tempest.public_allocation_end }}"
 
 - name: Run tempest
-  hosts: tester
+  hosts: tempest
   gather_facts: no
   tasks:
       - name: generate tempest.conf
