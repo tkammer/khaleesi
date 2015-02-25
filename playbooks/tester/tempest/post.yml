@@ -1,6 +1,6 @@
 ---
 - name: Fetch results
-  hosts: tempest
+  hosts: tester
   gather_facts: no
   tasks:
     -  fetch: src={{ tempest.dir }}/nosetests.xml
