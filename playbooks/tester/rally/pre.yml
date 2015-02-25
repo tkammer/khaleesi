@@ -4,10 +4,11 @@
   sudo: yes
   tasks:
     - name: Install needed packages on machine
-      yum: name={{ item }} state=present
+      yum: name="{{ item }}" state=present
       with_items:
         - git
         - which
+        - @Development tools
 
 - name: Install Rally on the machine
   hosts: tester
