@@ -42,7 +42,7 @@
       authorized_key: user=root key="{{ lookup('file', '/tmp/ssh_keys/id_rsa.pub') }}"
 
 - name: Updating the Network services
-  hosts: openstack_nodes:!tempest
+  hosts: openstack_nodes:!tester
   gather_facts: no
   sudo: yes
   tasks:
