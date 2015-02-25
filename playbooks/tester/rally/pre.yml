@@ -8,6 +8,8 @@
       with_items:
         - git
         - which
+    - name: GroupInstall Development Tools
+      shell: yum groupinstall "Development tools" -y
 
 - name: Install Rally on the machine
   hosts: tester
