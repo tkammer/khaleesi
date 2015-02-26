@@ -1,6 +1,6 @@
 ---
 - name: Install tempest dependencies on the machine
-  hosts: tempest
+  hosts: tester
   sudo: yes
   tasks:
     - name: Install release tool rpm for dependencies (python-ironicclient) on machines
@@ -24,7 +24,7 @@
         - python-virtualenv
 
 - name: Install tempest on the machine
-  hosts: tempest
+  hosts: tester
   tasks:
     - name: Clone tempest from git repo
       git: repo={{ tempest.git.repo }} version={{ tempest.git.revision }}
