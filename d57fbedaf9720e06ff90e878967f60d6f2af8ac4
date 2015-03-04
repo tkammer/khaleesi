@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "7a1969be_c9d44349",
+        "filename": "library/log_search",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1002379
+      },
+      "writtenOn": "2015-03-04T10:31:14Z",
+      "side": 1,
+      "message": "In the original file, it\u0027s just a symlink to log_search.py, perhaps it\u0027s showing here the name of the file just to clarify.",
+      "parentUuid": "7a1969be_69deef6e",
+      "revId": "d57fbedaf9720e06ff90e878967f60d6f2af8ac4",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a1969be_e983ff53",
         "filename": "library/log_search.py",
         "patchSetId": 1
@@ -36,6 +54,24 @@
     },
     {
       "key": {
+        "uuid": "7a1969be_29ccf7bb",
+        "filename": "library/log_search.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 1002379
+      },
+      "writtenOn": "2015-03-04T10:31:14Z",
+      "side": 1,
+      "message": "Checking if it will work",
+      "parentUuid": "7a1969be_e983ff53",
+      "revId": "d57fbedaf9720e06ff90e878967f60d6f2af8ac4",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a1969be_c9ed6327",
         "filename": "library/log_search.py",
         "patchSetId": 1
@@ -47,6 +83,24 @@
       "writtenOn": "2015-03-04T10:26:55Z",
       "side": 1,
       "message": "Needs to support: yes | no | True | False",
+      "revId": "d57fbedaf9720e06ff90e878967f60d6f2af8ac4",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a1969be_09cf7bb1",
+        "filename": "library/log_search.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 1002379
+      },
+      "writtenOn": "2015-03-04T10:31:14Z",
+      "side": 1,
+      "message": "Since you told me to use only the search_for_regex, the option is_regex is no longer required.",
+      "parentUuid": "7a1969be_c9ed6327",
       "revId": "d57fbedaf9720e06ff90e878967f60d6f2af8ac4",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
