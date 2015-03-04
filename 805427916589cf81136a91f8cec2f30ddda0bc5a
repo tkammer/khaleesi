@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7a1969be_944c2272",
+        "filename": "library/beaker/bkr.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 1002471
+      },
+      "writtenOn": "2015-03-04T13:41:57Z",
+      "side": 1,
+      "message": "In general, try and always use only python modules instead of wrapping shell commands.\nThis is because shell commands are distro specific, so the not all commands might be the same on RHEL/Fedora/Ubuntu/etc..",
+      "revId": "805427916589cf81136a91f8cec2f30ddda0bc5a",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a1969be_9491c29b",
+        "filename": "library/beaker/bkr.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 1002471
+      },
+      "writtenOn": "2015-03-04T13:41:57Z",
+      "side": 1,
+      "message": "try and move it to use the python module commands:\nhttps://git.beaker-project.org/cgit/beaker/tree/README",
+      "revId": "805427916589cf81136a91f8cec2f30ddda0bc5a",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
