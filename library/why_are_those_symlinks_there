@@ -1,4 +1,0 @@
-Because ansible 1.7.2 do not load files .py and ansible 1.8 don't load the
-extensionless files.
-
-So the answer is backwards compatibility.

@@ -5,6 +5,7 @@
       - controller
       - networker
       - compute
+  gather_facts: yes
   sudo: yes
   tasks:
       - name: Disable any existing repos
@@ -48,6 +49,6 @@
   tasks:
     - name: Remove NetworkManager
       service: name=NetworkManager state=stopped enabled=no
-      
+
     - name: Enabling the network service
       service: name=network state=started enabled=yes
