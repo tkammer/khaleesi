@@ -12,4 +12,5 @@
 - include: tester/{{ tester.name }}/run.yml
 - include: tester/{{ tester.name }}/post.yml
 
-# run tests
+# collect logs
+- include: collect_logs.yml
