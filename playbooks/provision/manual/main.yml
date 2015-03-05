@@ -1,4 +1,4 @@
 ---
 - name: No provisioning needed - using manual
-  hosts: local
+  hosts: localhost
 

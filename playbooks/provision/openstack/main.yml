@@ -48,7 +48,7 @@
   tasks:
     - name: Setup networking (interfaces)
       template:
-            src: templates/ifcfg-interface.j2
+            src: ../templates/ifcfg-interface.j2
             dest: /etc/sysconfig/network-scripts/ifcfg-{{ item.interface }}
             owner: root
             group: root

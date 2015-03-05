@@ -1,6 +1,6 @@
 ---
 # provison
-- include: provision/{{ provisioner.type }}.yml
+- include: provision/{{ provisioner.type }}/main.yml
 
 # deploy openstack
 - include: installer/{{ installer.name }}/pre.yml
@@ -14,3 +14,6 @@
 
 # collect logs
 - include: collect_logs.yml
+
+# clean up
+- include: provision/{{ provisioner.type }}/cleanup.yml
