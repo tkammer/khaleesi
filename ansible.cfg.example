@@ -6,6 +6,7 @@ library = library:$VIRTUAL_ENV/lib/python2.7/site-packages/ansible/modules
 gathering = explicitly
 pipelining=True
 timeout = 30
+force_color = 1
 
 handlers_path = ./handlers
 lookup_plugins = ./plugins/lookups
