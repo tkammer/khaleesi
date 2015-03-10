@@ -1,0 +1,84 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3a1371a2_47b9d0e8",
+        "filename": "library/beaker.py",
+        "patchSetId": 3
+      },
+      "lineNbr": 101,
+      "author": {
+        "id": 1002471
+      },
+      "writtenOn": "2015-03-10T16:55:50Z",
+      "side": 1,
+      "message": "Please use True / False instead of constants.\nAlthough there is an extremely minor performance gain of using this, there is no real gain here.",
+      "range": {
+        "startLine": 101,
+        "startChar": 0,
+        "endLine": 101,
+        "endChar": 4
+      },
+      "revId": "ec36b188387a3784ffb19db43837670894da966b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a1371a2_a77b6428",
+        "filename": "library/beaker.py",
+        "patchSetId": 3
+      },
+      "lineNbr": 220,
+      "author": {
+        "id": 1002471
+      },
+      "writtenOn": "2015-03-10T16:55:50Z",
+      "side": 1,
+      "message": "instead of a \"double return\" in a function, init a variable like \"is_successful \u003d True\" and have the exception change the value to False.\nthen only return the variable with the result.",
+      "revId": "ec36b188387a3784ffb19db43837670894da966b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a1371a2_e7755c33",
+        "filename": "library/beaker.py",
+        "patchSetId": 3
+      },
+      "lineNbr": 289,
+      "author": {
+        "id": 1002471
+      },
+      "writtenOn": "2015-03-10T16:55:50Z",
+      "side": 1,
+      "message": "same as the above command.\nhave a variable :) the you don\u0027t need this if.",
+      "range": {
+        "startLine": 289,
+        "startChar": 4,
+        "endLine": 289,
+        "endChar": 10
+      },
+      "revId": "ec36b188387a3784ffb19db43837670894da966b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a1371a2_c772e048",
+        "filename": "library/beaker.py",
+        "patchSetId": 3
+      },
+      "lineNbr": 308,
+      "author": {
+        "id": 1002471
+      },
+      "writtenOn": "2015-03-10T16:55:50Z",
+      "side": 1,
+      "message": "same as above",
+      "revId": "ec36b188387a3784ffb19db43837670894da966b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
