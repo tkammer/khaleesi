@@ -6,7 +6,7 @@
 
 - name: sahara | service | is configued
   sudo: yes
-  template: src=sahara.conf.j2 dest=/etc/sahara/sahara.conf
+  template: src=../templates/sahara.conf.j2 dest=/etc/sahara/sahara.conf
   tags: sahara
 
 - name: sahara | service | create database
@@ -43,19 +43,6 @@
         user={{ sahara_username }}
         password={{ sahara_password }}
         tenant={{ sahara_tenant_name }}
-        login_user={{ admin_username }}
-        login_password={{ admin_password }}
-        login_tenant_name={{ admin_tenant_name }}
-        endpoint=http://{{ controller_ip }}:5000/v2.0/
-        state=present
-        role=admin
-  tags: sahara
-
-- name: sahara | service | add role admin / project admin to the user (workaround lp1314124)
-  keystone_user:
-        user={{ sahara_username }}
-        password={{ sahara_password }}
-        tenant={{ admin_tenant_name }}
         login_user={{ admin_username }}
         login_password={{ admin_password }}
         login_tenant_name={{ admin_tenant_name }}
