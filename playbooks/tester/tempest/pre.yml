@@ -4,7 +4,7 @@
   sudo: yes
   tasks:
     - name: Install release tool rpm for dependencies (python-ironicclient) on machines
-      command: yum -y localinstall http://repos.fedorapeople.org/repos/openstack/openstack-icehouse/rdo-release-icehouse-4.noarch.rpm
+      command: yum -y localinstall {{ tempest.rdo.rpm }}
 
     - name: Install tempest rpm for dependencies
       yum: name=openstack-tempest-{{ tempest.rdo.version }}-{{ tempest.rpm.version }} state=present
