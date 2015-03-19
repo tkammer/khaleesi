@@ -1,3 +1,0 @@
----
-yum_update: yes
-distro_reboot_options: " ' Reboot is triggered by Ansible' "

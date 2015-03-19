@@ -1,11 +1,11 @@
 Getting Started with Khaleesi
 -----------------------
-https://github.com/redhat-openstack/khaleesi-settings/blob/master/doc/khaleesi.rst
+WIP
 
 
 Associated Settings Repository
 -----------------------
-https://github.com/redhat-openstack/khaleesi-settings
+WIP
 
 
 Code Review (IMPORTANT)
@@ -21,7 +21,7 @@ To set up your repo for gerrit:
 
 Add a new remote to your working tree:
 
-    git remote add gerrit ssh://username@review.gerrithub.io:29418/redhat-openstack/khaleesi
+    git remote add gerrit ssh://username@review.gerrithub.io:29418/tkammer/khaleesi
 
 Replace username with your gerrithub username.
 
@@ -35,26 +35,5 @@ Again, replace username with your gerrithub username.
 Required Ansible version
 ------------------------
 
-Ansible 1.5 is now required.
-
-
-Std{out,err} callback plugin
-----------------------------
-
-To use the callback plugin that will log all stdout, stderr, and other data about most tasks, you must set the ANSIBLE_CALLBACK_PLUGINS envvar. You can also set the KHALEESI_LOG_PATH envvar. KHALEESI_LOG_PATH defaults to /tmp/stdstream_logs.
-
-    export ANSIBLE_CALLBACK_PLUGINS=$WORKSPACE/khaleesi/plugins/callbacks
-    export KHALEESI_LOG_PATH=$WORKSPACE/ansible_log
-
-Khaleesi use cases
-------------------
-
-You can use Khaleesi to setup these development/testing environments:
-
-* [Foreman](https://github.com/redhat-openstack/khaleesi/blob/master/doc/foreman.md)
-
-* [TripleO Devtest](https://github.com/redhat-openstack/khaleesi/blob/master/doc/tripleo_devtest.md)
-
-* [TripleO Tuskar](https://github.com/redhat-openstack/khaleesi/blob/master/doc/tripleo_tuskar.md)
-
+Ansible 1.8 is now required.
 
