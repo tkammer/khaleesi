@@ -1,0 +1,2 @@
+---
+- include: provisioner/{{ provisioner.type }}/cleanup.yml
