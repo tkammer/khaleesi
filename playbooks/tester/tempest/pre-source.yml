@@ -1,0 +1,52 @@
+---
+- name: Install rpm deps for source-based tempest
+  hosts: tester
+  sudo: yes
+  tasks:
+    - name: Install release tool rpm for dependencies (python-ironicclient)
+      command: yum -y localinstall {{ tempest.rdo.rpm }}
+
+    - name: Install tempest-rpm to pull in tempest deps via rpms
+      yum: name=openstack-tempest-{{ tempest.rdo.version }}-{{ tempest.rpm.version }} state=present
+
+    - name: Install support packages for pip-based deps building
+      yum: name={{ item }} state=present
+      with_items:
+        - facter
+        - gcc
+        - git
+        - libffi-devel
+        - libxml2-devel
+        - libxslt-devel
+        - mariadb-devel
+        - openssl-devel
+        - python-pip
+        - python-virtualenv
+
+- name: Install tempest from source
+  hosts: tester
+  tasks:
+    - git: repo={{ tempest.git.repo }} version={{ tempest.git.revision }}
+           dest={{ tempest.dir }}
+
+    - name: install virtualenv
+      command: "python {{ tempest.dir }}/tools/install_venv.py {{ tempest.dir }}"
+
+    - name: prepare list of extra/specific pip pkgs to install
+      copy:
+        dest: "/root/extra-requirements.txt"
+        content: |
+          junitxml
+          unittest2
+          nose
+          testtools=0.9.34
+          python-subunit=0.0.15
+          python-ceilometerclient=1.0.10 # fix: tempest failure
+
+    - name: pip install requirements
+      pip: requirements="{{ tempest.dir }}/{{ item }}" state=present virtualenv="{{ tempest.dir }}/.venv"
+      with_items:
+        - requirements.txt
+        - test-requirements.txt
+        - extra-requirements.txt
+
