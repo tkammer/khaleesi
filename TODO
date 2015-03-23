@@ -1,0 +1,3 @@
+- deploy jobs with thaleesi - rpm-nightly + source
+  (may need some changes in khal-settings too for rpm-nightly)
+- make rpm-nigtly repo use variables
