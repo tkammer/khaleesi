@@ -33,6 +33,8 @@
 
       - name: fetch ssh-key generated from controller
         fetch: src=/root/.ssh/id_rsa.pub dest=/tmp/ssh_keys/ flat=yes fail_on_missing=yes
+      - name: fetch ssh-key generated from controller
+        fetch: src=/root/.ssh/id_rsa dest=/tmp/ssh_keys/ flat=yes fail_on_missing=yes
 
 - name: Copy ssh-key to compute and network hosts
   hosts: openstack_nodes
@@ -41,14 +43,17 @@
   tasks:
     - name: copy ssh-key to nodes
       authorized_key: user=root key="{{ lookup('file', '/tmp/ssh_keys/id_rsa.pub') }}"
+    - name: copy also private key for debugging
+      copy: dest=/root/.ssh/controller_priv src=/tmp/ssh_keys/id_rsa mode=0600
 
 - name: Updating the Network services
   hosts: openstack_nodes:!tester
   gather_facts: no
   sudo: yes
   tasks:
+    - name: flip NetworkManager to flat network scripts
+      shell: nohup bash -c 'systemctl stop NetworkManager; systemctl restart network'
     - name: Remove NetworkManager
       service: name=NetworkManager state=stopped enabled=no
-
     - name: Enabling the network service
       service: name=network state=started enabled=yes
