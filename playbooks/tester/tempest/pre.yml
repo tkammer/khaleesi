@@ -1,56 +1,16 @@
 ---
-- name: Install tempest dependencies on the machine
+- include: pre-{{ tempest.setup_method|replace("tempest/", "") }}.yml
+
+- name: Configure tempest
   hosts: tester
-  sudo: yes
+  sudo: yes 
   tasks:
-    - name: Install release tool rpm for dependencies (python-ironicclient) on machines
-      command: yum -y localinstall {{ tempest.rdo.rpm }}
+    # FIXME: use non-root user (and HOME path) for configure-tempest.sh,
+    #        after tempest.rpm ships and reads /etc/tempest or ~/tempest.conf (or something in that style) 
+    - template: dest=/root/configure-tempest.sh src=../templates/configure-tempest.sh owner=root group=root mode=0755
+      register: config_script
+    - command: /root/configure-tempest.sh
+      when: config_script|changed
+    - name: initiate testr
+      shell: creates="{{ tempest.dir }}/.testrepository" chdir="{{ tempest.dir }}" testr init
 
-    - name: Install tempest rpm for dependencies
-      yum: name=openstack-tempest-{{ tempest.rdo.version }}-{{ tempest.rpm.version }} state=present
-
-    - name: Install needed packages on machine
-      yum: name={{ item }} state=present
-      with_items:
-        - facter
-        - gcc
-        - git
-        - libffi-devel
-        - libxml2-devel
-        - libxslt-devel
-        - mariadb-devel
-        - openssl-devel
-        - python-pip
-        - python-virtualenv
-
-- name: Install tempest on the machine
-  hosts: tester
-  tasks:
-    - name: Clone tempest from git repo
-      git: repo={{ tempest.git.repo }} version={{ tempest.git.revision }}
-           dest={{ tempest.dir }}
-
-    - name: install virtualenv
-      command: "python {{ tempest.dir }}/tools/install_venv.py {{ tempest.dir }}"
-
-    - name: pip install junitxml, unittest2, testtools
-      pip: name="{{ item }}" state=present virtualenv="{{ tempest.dir }}/.venv"
-      with_items:
-        - junitxml
-        - unittest2
-        - nose
-
-    - name: pip install testtools, specific version
-      pip: name="{{ item.name }}" state=present version={{ item.version }}
-           virtualenv="{{ tempest.dir }}/.venv"
-      with_items:
-        - { name: testtools, version: '0.9.34' }
-        - { name: python-subunit, version: '0.0.15'}
-        - { name: python-ceilometerclient, version: '1.0.10'}   # fix: tempest failure
-
-    - name: pip install requirements
-      pip: requirements="{{ tempest.dir }}/{{ item }}" state=present
-           virtualenv="{{ tempest.dir }}/.venv"
-      with_items:
-        - requirements.txt
-        - test-requirements.txt
