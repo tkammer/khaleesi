@@ -1,0 +1,6 @@
+- fix uptime VS bootime
+- deploy jobs with thaleesi - rpm-nightly + source
+  (may need some changes in khal-settings too for rpm-nightly)
+- make rpm-nigtly repo use variables
+- prepare inventory/hosts file generating jinja template
+- split to standalone top level playbooks (/pbooks/install.yml ...)
