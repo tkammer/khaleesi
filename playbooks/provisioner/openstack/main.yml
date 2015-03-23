@@ -4,8 +4,6 @@
   gather_facts: no
   vars:
     - mgmt_network_name: "{{ provisioner.network.nic.net_1.name }}"
-  handlers:
-    - include: "{{ lookup('env','PWD') }}/handlers/system/handlers.yml"
   tasks:
     - name: Create nodes
       nova_compute:
@@ -39,12 +37,15 @@
         provisioner_host_addresses="{{ item.info.addresses|to_json }}"
       with_items: created_nodes.results
 
+- name: wait for hosts to get reachable
+  hosts: openstack_nodes
+  tasks:
+    - include: "{{ lookup('env','PWD') }}/tasks/wait_for_ssh.yml"
+
 - name: Update network interfaces on nodes - OpenStack
   hosts: openstack_nodes
   gather_facts: yes
   sudo: yes
-  handlers:
-    - include: "{{ lookup('env','PWD') }}/handlers/system/handlers.yml"
   tasks:
     - name: Setup networking (interfaces)
       template:
@@ -54,7 +55,6 @@
             group: root
             mode: 644
       with_items: nodes.controller.net_interfaces
-      notify:
-        - Reboot machines
-        - Wait for SSH
-        - Fail if any machine fail
+      register: reboot_reason 
+    - include: "{{ lookup('env','PWD') }}/tasks/reboot.yml"
+
