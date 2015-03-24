@@ -1,0 +1,4 @@
+---
+- include: installer/{{ installer.name }}/pre.yml
+- include: installer/{{ installer.name }}/run.yml
+- include: installer/{{ installer.name }}/post.yml
