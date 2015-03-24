@@ -9,7 +9,7 @@ job_settings.yml
 nodes.yml
 *hosts
 *.py[co]
-inventory*
+/inventory*
 # Sublime projects
 *.sublime-*
 archive.*
