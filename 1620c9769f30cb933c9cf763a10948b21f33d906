@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a106d94_c947831c",
+        "filename": "playbooks/provision.yml",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1002471
+      },
+      "writtenOn": "2015-03-25T13:42:58Z",
+      "side": 1,
+      "message": "I would rather have in the playbook:\nvars:\n  - working_dir: \"{{ lookup(\u0027env\u0027, \u0027PWD\u0027) }}\"\ntasks:\n  - template:\n    dest: {{ working_dir }}/....\n\nthan repeating it 3 times..",
+      "revId": "1620c9769f30cb933c9cf763a10948b21f33d906",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
