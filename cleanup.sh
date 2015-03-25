@@ -18,7 +18,11 @@ cleanup() {
   local cmdline="ansible-playbook -i local_hosts
         playbooks/cleanup.yml --extra-vars @$settings_file -v "
   log_info "executing: $cmdline"
-  execute $cmdline > teardown.txt 2>&1
+  if [[ "${2:-}" = "--verbose" ]]; then
+      execute $cmdline 2>&1 | tee teardown.txt
+  else
+      execute $cmdline > teardown.txt 2>&1
+  fi
 }
 
 cleanup "$@"
