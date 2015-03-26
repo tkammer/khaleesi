@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a106d94_143feb26",
+        "filename": "playbooks/installer/packstack/pre.yml",
+        "patchSetId": 2
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 1002471
+      },
+      "writtenOn": "2015-03-26T10:17:54Z",
+      "side": 1,
+      "message": "if you\u0027re doing something for DEBUG, please decide on a flag saying we are in DEBUG mode (in khaleesi-settings) and add a \"when: DEBUG\" statement to skip incase we are not DEBUGGING",
+      "revId": "eb511461e97a9907bdcd0d60f0f41fee933fb45d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
