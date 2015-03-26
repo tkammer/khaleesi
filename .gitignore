@@ -2,7 +2,6 @@ nova.ini
 nosetests.xml
 bugzilla.ini
 ansible.cfg
-group_vars/all
 settings.yml
 repo_settings.yml
 job_settings.yml
