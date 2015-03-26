@@ -1,0 +1,13 @@
+---
+#
+# convenient playbook for preparing nodes for manual debugging
+# add any of your cool stuff here please :)
+#
+- name: distribute ssh keys everywhere
+  hosts: openstack_nodes
+  gather_facts: no
+  sudo: yes
+  tasks:
+    - fetch: src=/root/.ssh/id_rsa dest=/tmp/ssh_keys/ flat=yes fail_on_missing=yes
+      when: inventory_hostname == controller
+    - copy: dest=/root/.ssh/controller_priv src=/tmp/ssh_keys/id_rsa mode=0600
