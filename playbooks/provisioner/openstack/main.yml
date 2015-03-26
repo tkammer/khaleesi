@@ -40,7 +40,7 @@
 - name: wait for hosts to get reachable
   hosts: openstack_nodes
   tasks:
-    - include: "{{ lookup('env','PWD') }}/tasks/wait_for_ssh.yml"
+    - include: "{{ lookup('env', 'PWD') }}/tasks/wait_for_ssh.yml"
 
 - name: Update network interfaces on nodes - OpenStack
   hosts: openstack_nodes
@@ -56,5 +56,5 @@
             mode: 644
       with_items: nodes.controller.net_interfaces
       register: reboot_reason 
-    - include: "{{ lookup('env','PWD') }}/tasks/reboot.yml"
+    - include: "{{ lookup('env', 'PWD') }}/tasks/reboot.yml"
 

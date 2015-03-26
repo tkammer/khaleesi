@@ -1,0 +1,3 @@
+---
+#working_dir: lookup('env', 'PWD')
+working_dir: /all/src/thaleesi
