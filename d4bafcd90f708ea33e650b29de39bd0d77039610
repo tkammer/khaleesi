@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a106d94_8a90cf96",
+        "filename": "playbooks/install.yml",
+        "patchSetId": 1
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 1002471
+      },
+      "writtenOn": "2015-03-27T14:13:25Z",
+      "side": 1,
+      "message": "sorry for not noticing this sooner, but isn\u0027t this suppose to be:\nprovisioner.network.public_subnet_gateway ?\n(the rest are also: provisioner.network...)",
+      "revId": "d4bafcd90f708ea33e650b29de39bd0d77039610",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
