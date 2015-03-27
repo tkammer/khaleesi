@@ -1,8 +1,10 @@
 ---
 - name: Install rhosqe tests from source
   hosts: controller
+  sudo: yes
   tasks:
-    - git: repo={{ tester.rhosqe.git.repo }} version={{ tester.git.rhosqe.revision }}
+    - yum: name=git state=present
+    - git: repo={{ tester.rhosqe.git.repo }} version={{ tester.rhosqe.git.revision }}
            dest={{ tester.dir }}
-    - template: dest="/root/run-tests.sh" src="../templates/run_rhosqe_tests.sh"
+    - template: dest="/root/run-tests.sh" src="../templates/run_rhosqe_tests.sh" mode=0755
 
