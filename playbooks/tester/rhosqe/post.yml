@@ -1,7 +1,7 @@
 ---
-- name: Fetch results
+- name: "TODO - maybe generate junit xml here?"
   hosts: tester
   gather_facts: no
-  tasks:
-    -  fetch: src={{ tempest.dir }}/tempest.xml
-              dest=tempest.xml flat=yes
+#  tasks:
+#    -  fetch: src={{ tempest.dir }}/tempest.xml
+#              dest=tempest.xml flat=yes
