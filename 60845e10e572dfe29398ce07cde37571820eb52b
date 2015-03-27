@@ -72,6 +72,24 @@
     },
     {
       "key": {
+        "uuid": "1a106d94_c7048280",
+        "filename": "playbooks/adhoc/sahara/main.yml",
+        "patchSetId": 2
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1002471
+      },
+      "writtenOn": "2015-03-27T11:13:36Z",
+      "side": 1,
+      "message": "Why do you need to replicate the \"when\" for each task?\nI didn\u0027t say not to use the \"include dashboard.yml\", I said just to remove the service.yml by moving all it\u0027s tasks here and merging the two plays.\nYou will still have the \"include dashboard.yml; when: ...\"\njust everything will be in one play --\u003e much more readable since it\u0027s not a long task.",
+      "parentUuid": "1a106d94_477c1221",
+      "revId": "60845e10e572dfe29398ce07cde37571820eb52b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a106d94_a76346b0",
         "filename": "playbooks/adhoc/sahara/main.yml",
         "patchSetId": 2
