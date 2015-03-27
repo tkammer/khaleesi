@@ -145,6 +145,8 @@ main() {
     $COLLECT_LOGS  && on_exit collect_logs
     $TAKE_SNAPSHOT && on_exit take_snapshot
 
+    [[ -e "ansible.cfg" ]] || ln -s ./ansible.cfg.example ./ansible.cfg
+
     echo -e "\nPlaybook: $PLAYBOOK"
     ansible_playbook $PLAYBOOK $ARGS_FOR_ANSIBLE
 }
