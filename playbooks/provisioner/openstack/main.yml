@@ -39,12 +39,15 @@
 
 - name: wait for hosts to get reachable
   hosts: openstack_nodes
+  gather_facts: no
+  max_fail_percentage: 0
   tasks:
     - include: "{{ lookup('env', 'PWD') }}/tasks/wait_for_ssh.yml"
 
 - name: Update network interfaces on nodes - OpenStack
   hosts: openstack_nodes
   gather_facts: yes
+  max_fail_percentage: 0
   sudo: yes
   tasks:
     - name: Setup networking (interfaces)
@@ -55,6 +58,6 @@
             group: root
             mode: 644
       with_items: nodes.controller.net_interfaces
-      register: reboot_reason 
+      register: reboot_reason
     - include: "{{ lookup('env', 'PWD') }}/tasks/reboot.yml"
 

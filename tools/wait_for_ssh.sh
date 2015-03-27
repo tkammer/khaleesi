@@ -20,6 +20,7 @@ if [[ "$1" = "-v" || "$1" = "-vv" ]]; then
 fi
 
 TIMEOUT=${TIMEOUT:-300}       # how many seconds before this script fails if it couldn't already reach the machine before
+MIN_REACHED_COUNT=${MIN_REACHED_COUNT:-3}
 DELAY=${DELAY:-0.3}           # how long to wait between retrying ssh (low is better, though it means more traffic)
 CONNTIMEOUT=${CONNTIMEOUT:-2} # (soft) timeout for ssh connection
 CONNKILL=${CONNKILL:-5}       # hard timeout for ssh connection
@@ -52,6 +53,7 @@ ssh="$ssh $@"
 
 last_rc=999
 cnt=0
+okCnt=0
 
 while true; do
   cnt=$(( $cnt + 1 ))
@@ -78,8 +80,15 @@ while true; do
   fi
 
   if [[ "$last_rc" = "0" ]]; then
-    echo "Reached $IP after waiting for $cnt retries / ${TIME_DIFF}s, boottime: $(TZ=UTC date --date="@$BOOTTIME")"
-    exit 0
+    okCnt=$(( $okCnt + 1 ))
+    ### special section to help debug occasional ssh-lost issue with tester(fedora) nodes
+    echo "Reached $IP, $okCnt-time(s) from $MIN_REACHED_COUNT, after waiting for $cnt retries / ${TIME_DIFF}s, boottime: $(TZ=UTC date --date="@$BOOTTIME")"
+    echo "Debug reachability:"
+    timeout -s KILL ${CONNKILL}s $ssh  'dmesg | tail -n50; journalctl -xn'
+    ### end-of-special-section
+    if [[ $okCnt -ge $MIN_REACHED_COUNT ]]; then
+      exit 0
+    fi
   fi
   sleep $DELAY
 done
