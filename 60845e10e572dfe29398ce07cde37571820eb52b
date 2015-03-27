@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "1a106d94_c78f6222",
+        "filename": "playbooks/adhoc/sahara/dashboard.yml",
+        "patchSetId": 2
+      },
+      "lineNbr": 4,
+      "author": {
+        "id": 1001398
+      },
+      "writtenOn": "2015-03-27T10:53:21Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "1a106d94_6752eede",
+      "revId": "60845e10e572dfe29398ce07cde37571820eb52b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a106d94_c75e42e9",
         "filename": "playbooks/adhoc/sahara/main.yml",
         "patchSetId": 2
@@ -30,6 +48,24 @@
       "writtenOn": "2015-03-27T09:43:47Z",
       "side": 1,
       "message": "why do you \"include\" the service.yml instead of just writing the code here?\nI believe having the tasks written explicitly here are more readable.\nUnless you call service.yml from another place (and then it\u0027s o.k as it\u0027s a reuse of code), but I haven\u0027t noticed any reuse..",
+      "revId": "60845e10e572dfe29398ce07cde37571820eb52b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_477c1221",
+        "filename": "playbooks/adhoc/sahara/main.yml",
+        "patchSetId": 2
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1001398
+      },
+      "writtenOn": "2015-03-27T10:53:21Z",
+      "side": 1,
+      "message": "I prefer to leave it this way, because of the next condition.\nThe other include applies only for some versions, and I don\u0027t want to replicate the when for each task (and there are no other solutions if I read Ansible documentation correctly). \n\nIf I keep the second include (dashboard.yml) with include, but I expand the content of service here, I feel it would be less readable. We are not talking about tons of recursively included playbooks...",
+      "parentUuid": "1a106d94_c75e42e9",
       "revId": "60845e10e572dfe29398ce07cde37571820eb52b",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
@@ -53,6 +89,24 @@
     },
     {
       "key": {
+        "uuid": "1a106d94_27791630",
+        "filename": "playbooks/adhoc/sahara/main.yml",
+        "patchSetId": 2
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1001398
+      },
+      "writtenOn": "2015-03-27T10:53:21Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "1a106d94_a76346b0",
+      "revId": "60845e10e572dfe29398ce07cde37571820eb52b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a106d94_c705a2c3",
         "filename": "playbooks/adhoc/sahara/main.yml",
         "patchSetId": 2
@@ -70,6 +124,24 @@
     },
     {
       "key": {
+        "uuid": "1a106d94_87760a3d",
+        "filename": "playbooks/adhoc/sahara/main.yml",
+        "patchSetId": 2
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1001398
+      },
+      "writtenOn": "2015-03-27T10:53:21Z",
+      "side": 1,
+      "message": "No, it\u0027s the when (see above)",
+      "parentUuid": "1a106d94_c705a2c3",
+      "revId": "60845e10e572dfe29398ce07cde37571820eb52b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a106d94_276f5694",
         "filename": "playbooks/adhoc/sahara/main.yml",
         "patchSetId": 2
@@ -81,6 +153,24 @@
       "writtenOn": "2015-03-27T09:43:47Z",
       "side": 1,
       "message": "again, I am all in favor of unifying / grouping vars in a general location, but only if it is done in order to reuse existing code.\nIn such case when you use it only one time, I see no reason to have a separate file.\n(this remark is for after you merge this play and the above)",
+      "revId": "60845e10e572dfe29398ce07cde37571820eb52b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_67730e4e",
+        "filename": "playbooks/adhoc/sahara/main.yml",
+        "patchSetId": 2
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 1001398
+      },
+      "writtenOn": "2015-03-27T10:53:21Z",
+      "side": 1,
+      "message": "See above",
+      "parentUuid": "1a106d94_276f5694",
       "revId": "60845e10e572dfe29398ce07cde37571820eb52b",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
