@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a106d94_aa630bb0",
+        "filename": "playbooks/adhoc/sahara/main.yml",
+        "patchSetId": 3
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 1002471
+      },
+      "writtenOn": "2015-03-27T14:24:54Z",
+      "side": 1,
+      "message": "Why is this comment here?",
+      "revId": "41d3f9595f437eab1b99ea7cfd15c9df2191ba87",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_0a597ffe",
+        "filename": "playbooks/adhoc/sahara/main.yml",
+        "patchSetId": 3
+      },
+      "lineNbr": 96,
+      "author": {
+        "id": 1002471
+      },
+      "writtenOn": "2015-03-27T14:24:54Z",
+      "side": 1,
+      "message": "will ask again..\nWhy is this play necessary? :)\njust remove lines 91-96 and have the include as part of the above play.",
+      "revId": "41d3f9595f437eab1b99ea7cfd15c9df2191ba87",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
