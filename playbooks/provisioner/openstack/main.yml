@@ -39,6 +39,7 @@
 
 - name: wait for hosts to get reachable
   hosts: openstack_nodes
+  gather_facts: no
   tasks:
     - include: "{{ lookup('env', 'PWD') }}/tasks/wait_for_ssh.yml"
 
