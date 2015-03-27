@@ -1,0 +1,89 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a106d94_6752eede",
+        "filename": "playbooks/adhoc/sahara/dashboard.yml",
+        "patchSetId": 2
+      },
+      "lineNbr": 4,
+      "author": {
+        "id": 1002471
+      },
+      "writtenOn": "2015-03-27T09:43:47Z",
+      "side": 1,
+      "message": "Please remove the \"tags\" here, there is really no meaning in putting this as the whole point of the restructure is to have separate playbooks, it doesn\u0027t make sense to tag each and every task with \"sahara\" when the playbook itself is only sahara related code..",
+      "revId": "60845e10e572dfe29398ce07cde37571820eb52b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_c75e42e9",
+        "filename": "playbooks/adhoc/sahara/main.yml",
+        "patchSetId": 2
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1002471
+      },
+      "writtenOn": "2015-03-27T09:43:47Z",
+      "side": 1,
+      "message": "why do you \"include\" the service.yml instead of just writing the code here?\nI believe having the tasks written explicitly here are more readable.\nUnless you call service.yml from another place (and then it\u0027s o.k as it\u0027s a reuse of code), but I haven\u0027t noticed any reuse..",
+      "revId": "60845e10e572dfe29398ce07cde37571820eb52b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_a76346b0",
+        "filename": "playbooks/adhoc/sahara/main.yml",
+        "patchSetId": 2
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1002471
+      },
+      "writtenOn": "2015-03-27T09:43:47Z",
+      "side": 1,
+      "message": "please remove tag as explained before.",
+      "revId": "60845e10e572dfe29398ce07cde37571820eb52b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_c705a2c3",
+        "filename": "playbooks/adhoc/sahara/main.yml",
+        "patchSetId": 2
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1002471
+      },
+      "writtenOn": "2015-03-27T09:43:47Z",
+      "side": 1,
+      "message": "is there a reason for having this as a separate play?\nIt\u0027s the same hosts + same vars and if it\u0027s only for the \"sudo\" part, you can add the sudo into the task itself by:\ntask:\n  - name: some random sudo required task\n    command: \u003csudo related command\u003e\n    sudo: yes",
+      "revId": "60845e10e572dfe29398ce07cde37571820eb52b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_276f5694",
+        "filename": "playbooks/adhoc/sahara/main.yml",
+        "patchSetId": 2
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 1002471
+      },
+      "writtenOn": "2015-03-27T09:43:47Z",
+      "side": 1,
+      "message": "again, I am all in favor of unifying / grouping vars in a general location, but only if it is done in order to reuse existing code.\nIn such case when you use it only one time, I see no reason to have a separate file.\n(this remark is for after you merge this play and the above)",
+      "revId": "60845e10e572dfe29398ce07cde37571820eb52b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
