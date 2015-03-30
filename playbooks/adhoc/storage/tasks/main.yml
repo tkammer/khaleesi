@@ -1,0 +1,9 @@
+tasks:
+  - include: config_image.yml
+    when: nodes.controller.storage_image is defined
+
+  - include: config_volume.yml
+    when: nodes.controller.storage_volume is defined
+
+  - include: config_object.yml
+    when: nodes.controller.storage_object is defined
