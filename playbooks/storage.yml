@@ -1,0 +1,34 @@
+---
+- name: Install storage additional packages
+  hosts: controller
+  sudo: yes
+  tasks:
+    - name: Controller storage tools
+      yum: name={{ item }} state=present
+      with_items: {{ nodes.controller.packages }}
+
+
+- name: Configure storage service for controller
+  hosts: controller
+  tasks:
+    - include: adhoc/storage/config_image.yml
+      when: storage.image is defined
+
+    - include: adhoc/storage/config_volume.yml
+      when: storage.volume is defined
+
+    - include: adhoc/storage/config_object.yml
+      when: storage.object is defined
+
+- name: Configure storage service for compute node
+  hosts: compute
+  tasks:
+    - include: adhoc/storage/config_compute.yml
+      when: storage.compute is defined
+
+- name: Restart storage services
+  hosts: controller
+  tasks:
+    - shell: openstack-service restart subkey
+      with_items: {% for key, value in storage.iteritems() %}{%
+        for subkey in value %}{{ subkey }}{% endfor %}{% endfor %}
