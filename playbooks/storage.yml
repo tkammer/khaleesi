@@ -1,0 +1,42 @@
+---
+- name: Install storage additional packages
+  hosts: controller
+  sudo: yes
+  tasks:
+    - name: Controller storage tools
+      yum: name={{ item }} state=present
+      with_items: {{ nodes.controller.packages }}
+
+- name: Configure storage service for controller
+  hosts: controller
+  roles:
+    - { role: adhoc/storage/ }
+
+- name: Configure storage service for compute node
+  hosts: compute
+  roles:
+    - { role: adhoc/storage/ }
+
+- name: Restart storage services
+  hosts: controller
+  tasks:
+    - name: glance | service | restart
+      sudo: yes
+      shell: openstack-service restart glance
+      when: nodes.controller.storage_image.config.glance is defined
+
+    - name: nova | service | restart
+      sudo: yes
+      shell: openstack-service restart nova
+      when: nodes.controller.storage_image.config.nova is defined
+
+    - name: cinder | service | restart
+      sudo: yes
+      shell: openstack-service restart cinder
+      when: (nodes.controller.storage_image.config.cinder is defined) or (nodes.controller.storage_volume.config.cinder is defined)
+
+    - name: swift | service | restart
+      sudo: yes
+      shell: openstack-service restart swift
+      when: nodes.controller.storage_object is defined
+
