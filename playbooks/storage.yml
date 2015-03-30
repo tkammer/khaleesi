@@ -1,0 +1,24 @@
+---
+- name: Install storage additional packages
+  hosts: openstack_nodes # ????
+  sudo: yes
+  tasks:
+    - name: Install storage tools
+      yum: name={{ item }} state=present
+      with_items: {{ nodes.packages }}
+
+- name: Install configure and start volume storage service
+  hosts: controller:&storage_volume
+  roles:
+    - { role: adhoc/storage/volume }
+
+- name: Install configure and start image storage service
+  hosts: controller:&storage_image
+  roles:
+    - { role: adhoc/storage/image}
+
+
+- name: Install configure and start object storage service
+  hosts: controller:&storage_object
+  roles:
+    - { role: adhoc/storage/object }

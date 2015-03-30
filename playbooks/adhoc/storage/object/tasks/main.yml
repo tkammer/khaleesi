@@ -1,0 +1,19 @@
+---
+- name: swift | service | is installed
+  sudo: yes
+  yum: name=openstack-swift state=installed
+
+- name: swift | service | is configured
+  sudo: yes
+  template: src=swift.conf.j2 dest="{{ swift_conf_temp }}"
+
+- name: swift | crudini | merge config files
+  sudo: yes
+  shell: crudini --merge {{ swift_conf }} < {{ swift_conf_temp }}
+
+- name: swift | service | restart
+  sudo: yes
+  shell: openstack-service restart swift
+
+- debug: var=swift.conf_file
+  when: job.verbosity <= verbosity.debug
