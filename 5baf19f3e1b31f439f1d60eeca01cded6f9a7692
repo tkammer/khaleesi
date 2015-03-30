@@ -1,0 +1,118 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a106d94_53316beb",
+        "filename": "playbooks/adhoc/storage/image/tasks/main.yml",
+        "patchSetId": 1
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 1002471
+      },
+      "writtenOn": "2015-03-30T14:28:47Z",
+      "side": 1,
+      "message": "please remove all \"tags\"",
+      "revId": "5baf19f3e1b31f439f1d60eeca01cded6f9a7692",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_731d8766",
+        "filename": "playbooks/adhoc/storage/image/templates/cinder.conf.j2",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1002471
+      },
+      "writtenOn": "2015-03-30T14:28:47Z",
+      "side": 1,
+      "message": "please remove the trailing space here",
+      "revId": "5baf19f3e1b31f439f1d60eeca01cded6f9a7692",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_b326dfb8",
+        "filename": "playbooks/storage.yml",
+        "patchSetId": 1
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 1002471
+      },
+      "writtenOn": "2015-03-30T14:28:47Z",
+      "side": 1,
+      "message": "There is no \"role\" definition here, please move the tasks to explicitly be written here.",
+      "revId": "5baf19f3e1b31f439f1d60eeca01cded6f9a7692",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_932be381",
+        "filename": "playbooks/storage.yml",
+        "patchSetId": 1
+      },
+      "lineNbr": 6,
+      "author": {
+        "id": 1002471
+      },
+      "writtenOn": "2015-03-30T14:28:47Z",
+      "side": 1,
+      "message": "please remove the \"tags\", there is no meaning in having it here.",
+      "range": {
+        "startLine": 6,
+        "startChar": 5,
+        "endLine": 6,
+        "endChar": 6
+      },
+      "revId": "5baf19f3e1b31f439f1d60eeca01cded6f9a7692",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_d3255bac",
+        "filename": "playbooks/storage.yml",
+        "patchSetId": 1
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 1002471
+      },
+      "writtenOn": "2015-03-30T14:28:47Z",
+      "side": 1,
+      "message": "remove \"tags\"",
+      "revId": "5baf19f3e1b31f439f1d60eeca01cded6f9a7692",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_1337f3e4",
+        "filename": "playbooks/storage.yml",
+        "patchSetId": 1
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 1002471
+      },
+      "writtenOn": "2015-03-30T14:28:47Z",
+      "side": 1,
+      "message": "remove \"tags\"",
+      "range": {
+        "startLine": 20,
+        "startChar": 5,
+        "endLine": 20,
+        "endChar": 6
+      },
+      "revId": "5baf19f3e1b31f439f1d60eeca01cded6f9a7692",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
