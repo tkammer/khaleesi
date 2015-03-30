@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a106d94_dc63ad18",
+        "filename": "playbooks/installer/packstack/run.yml",
+        "patchSetId": 1
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 1002571
+      },
+      "writtenOn": "2015-03-30T09:14:24Z",
+      "side": 1,
+      "message": "What about to touch at at /tmp?",
+      "range": {
+        "startLine": 51,
+        "startChar": 83,
+        "endLine": 51,
+        "endChar": 92
+      },
+      "revId": "57a3e0a98f8a0716a538cb30e983af39346b102f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
