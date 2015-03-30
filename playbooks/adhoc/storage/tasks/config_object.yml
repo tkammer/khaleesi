@@ -1,0 +1,14 @@
+---
+- name: swift | set config vars
+  set_fact: config_items = nodes.controller.storage_object.config.swift[product.version|string]
+  when: nodes.controller.storage_object.config.swift is defined
+
+- name: swift | service | is configured
+  sudo: yes
+  template: src=config.j2 dest={{ swift_conf_temp }}
+  when: nodes.controller.storage_object.config.swift is defined
+
+- name: swift | crudini | merge config files
+  sudo: yes
+  shell: crudini --merge {{ swift_conf }} < {{ swift_conf_temp }}
+  when: nodes.controller.storage_object.config.swift is defined
