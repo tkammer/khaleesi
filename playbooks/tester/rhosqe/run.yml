@@ -4,5 +4,4 @@
   gather_facts: no
   sudo: yes
   tasks:
-    - shell: /root/run-tests.sh | tee "{{ tester.dir }}.log"
-      ignore_errors: True
+    - shell: /root/run-tests.sh "{{ tester.dir }}" /root/nosetests.xml | tee "{{ tester.dir }}.log"

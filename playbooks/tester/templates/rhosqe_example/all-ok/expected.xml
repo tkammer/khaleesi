@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="nosetests" tests="3" errors="0" failures="1" skip="1">
+    <testcase classname="ceilometer" name="Failing.sh" time="0"><failure type="exitCode" message="13"></failure></testcase>
+    <testcase classname="ceilometer" name="Passing.sh" time="1"></testcase>
+    <testcase classname="ceilometer" name="Skipping.sh" time="0"><skipped /></testcase>
+</testsuite>
