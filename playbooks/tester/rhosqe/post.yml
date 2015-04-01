@@ -1,7 +1,7 @@
 ---
-- name: "TODO - maybe generate junit xml here?"
-  hosts: tester
+- name: "Collect test results xml"
+  hosts: controller
   gather_facts: no
-#  tasks:
-#    -  fetch: src={{ tempest.dir }}/tempest.xml
-#              dest=tempest.xml flat=yes
+  sudo: yes
+  tasks:
+    - fetch: src=/root/nosetests.xml dest=nosetests.xml flat=yes
