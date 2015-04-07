@@ -34,7 +34,7 @@
 
     - name: prepare list of extra/specific pip pkgs to install
       copy:
-        dest: "/root/extra-requirements.txt"
+        dest: "{{ tempest.dir }}/extra-requirements.txt"
         content: |
           junitxml
           unittest2
