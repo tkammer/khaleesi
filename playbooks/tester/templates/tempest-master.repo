@@ -1,12 +1,13 @@
+{% if tempest.rpm.get('extra_repo', '') %}
 [tempest]
-name=Tempest nightly
+name=Tempest
 failovermethod=priority
-# ip here is psedlak's rh-tempest slave node (rebuilds tempest rpm)
-baseurl=http://10.8.51.111/delorean/repos/current/
+baseurl={{ tempest.rpm.extra_repo }}
 enabled=1
 metadata_expire=1d
 gpgcheck=0
 skip_if_unavailable=False
+{% endif %}
 
 [delorean-core]
 name=Delorean core
