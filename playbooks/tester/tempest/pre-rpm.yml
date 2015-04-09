@@ -11,6 +11,9 @@
     # TODO: if release != master use rdo/rhos release rpm/tool
     - yum: name=openstack-tempest-{{ tempest.rpm.release }} state=present
       register: tempest_rpm
+    - command: rpm -q --qf %{VERSION}-%{RELEASE} openstack-tempest-{{ tempest.rpm.release }}
+      register: tempest_rpm_version
+    - debug: "msg='Build mark: tempest={{ tempest_rpm_version.stdout }}'"
     # workaround: lp#1431449
     # and opt. lp#1433981
     # also yum ansible task does not enforce downgrade (it's happy with newer/broken version too)
