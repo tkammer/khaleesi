@@ -1,7 +1,7 @@
 ---
 - name: Install tempest from rpm
   hosts: tester
-  sudo: yes 
+  sudo: yes
   tasks:
     - template: dest=/etc/yum.repos.d/tempest.repo src=../templates/tempest.repo owner=root group=root mode=0644
       register: tempest_repo
@@ -9,6 +9,9 @@
       when: tempest_repo|changed
     - yum: name=openstack-tempest-{{ tempest.rpm.release }} state=present
       register: tempest_rpm
+    - command: rpm -q --qf %{VERSION}-%{RELEASE} openstack-tempest-{{ tempest.rpm.release }}
+      register: tempest_rpm_version
+    - debug: "msg='Build mark: tempest={{ tempest_rpm_version.stdout }}'"
     # workaround: lp#1431449
     # and opt. lp#1433981
     # also yum ansible task does not enforce downgrade (it's happy with newer/broken version too)
