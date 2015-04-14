@@ -1,0 +1,72 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a106d94_7569b424",
+        "filename": "playbooks/adhoc/storage/defaults/mail.yml",
+        "patchSetId": 4
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1002471
+      },
+      "writtenOn": "2015-04-14T14:04:48Z",
+      "side": 1,
+      "message": "I believe you meant to call it \"main.yml\"?",
+      "revId": "1a3944686e7e11078931523acd6643b7b58b6b07",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_1562003e",
+        "filename": "playbooks/adhoc/storage/tasks/config_image.yml",
+        "patchSetId": 4
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 1002471
+      },
+      "writtenOn": "2015-04-14T14:04:48Z",
+      "side": 1,
+      "message": "instead of duplicating everything here, please use params and keep this file \"clean\".",
+      "revId": "1a3944686e7e11078931523acd6643b7b58b6b07",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_355f3c74",
+        "filename": "playbooks/adhoc/storage/tasks/main.yml",
+        "patchSetId": 4
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 1002471
+      },
+      "writtenOn": "2015-04-14T14:04:48Z",
+      "side": 1,
+      "message": "please use spaces after each task for readability",
+      "revId": "1a3944686e7e11078931523acd6643b7b58b6b07",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_15c96026",
+        "filename": "playbooks/storage.yml",
+        "patchSetId": 4
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 1002471
+      },
+      "writtenOn": "2015-04-14T14:04:48Z",
+      "side": 1,
+      "message": "please make a general task / handler that receives the name of the service to restart instead of all these repeated lines",
+      "revId": "1a3944686e7e11078931523acd6643b7b58b6b07",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
