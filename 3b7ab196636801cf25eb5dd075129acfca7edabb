@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a106d94_f5a5a4b5",
+        "filename": "playbooks/tester/tempest/pre-source.yml",
+        "patchSetId": 1
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 1002471
+      },
+      "writtenOn": "2015-04-14T13:11:55Z",
+      "side": 1,
+      "message": "please add a space before the task for readability",
+      "revId": "3b7ab196636801cf25eb5dd075129acfca7edabb",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_55ad989b",
+        "filename": "playbooks/tester/tempest/pre-source.yml",
+        "patchSetId": 1
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 1002471
+      },
+      "writtenOn": "2015-04-14T13:11:55Z",
+      "side": 1,
+      "message": "please add a space before the task for readability.\nAlso, for debug messages, we might want to add \"when: verbose \u003csomething\u003e\"",
+      "revId": "3b7ab196636801cf25eb5dd075129acfca7edabb",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_9596f04a",
+        "filename": "playbooks/tester/tempest/pre-source.yml",
+        "patchSetId": 1
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 1002471
+      },
+      "writtenOn": "2015-04-14T13:11:55Z",
+      "side": 1,
+      "message": "Not for this patch, but wouldn\u0027t this section be better to be added in the configuration file under \"tester.tempest.requirements\" ?",
+      "revId": "3b7ab196636801cf25eb5dd075129acfca7edabb",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
