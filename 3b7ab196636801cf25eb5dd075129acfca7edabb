@@ -36,6 +36,24 @@
     },
     {
       "key": {
+        "uuid": "1a106d94_b5720c47",
+        "filename": "playbooks/tester/tempest/pre-source.yml",
+        "patchSetId": 1
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 1001189
+      },
+      "writtenOn": "2015-04-14T13:21:10Z",
+      "side": 1,
+      "message": "no when: in this case, we always want to have Build marks printed out",
+      "parentUuid": "1a106d94_55ad989b",
+      "revId": "3b7ab196636801cf25eb5dd075129acfca7edabb",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a106d94_9596f04a",
         "filename": "playbooks/tester/tempest/pre-source.yml",
         "patchSetId": 1
@@ -47,6 +65,24 @@
       "writtenOn": "2015-04-14T13:11:55Z",
       "side": 1,
       "message": "Not for this patch, but wouldn\u0027t this section be better to be added in the configuration file under \"tester.tempest.requirements\" ?",
+      "revId": "3b7ab196636801cf25eb5dd075129acfca7edabb",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_15916047",
+        "filename": "playbooks/tester/tempest/pre-source.yml",
+        "patchSetId": 1
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 1001189
+      },
+      "writtenOn": "2015-04-14T13:21:10Z",
+      "side": 1,
+      "message": "sounds good",
+      "parentUuid": "1a106d94_9596f04a",
       "revId": "3b7ab196636801cf25eb5dd075129acfca7edabb",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
