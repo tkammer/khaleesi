@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a106d94_35ed7c8c",
+        "filename": "playbooks/tester/tempest/pre-rpm.yml",
+        "patchSetId": 1
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1002471
+      },
+      "writtenOn": "2015-04-14T14:10:00Z",
+      "side": 1,
+      "message": "Please add spaces between tasks or else it makes it really hard to follow / read",
+      "revId": "d87cc4f7a42cf63afa0f596ccca88f84a65d1b19",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
