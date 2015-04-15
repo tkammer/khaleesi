@@ -4,4 +4,5 @@
   gather_facts: no
   tasks:
     -  fetch: src={{ tempest.dir }}/tempest.xml
-              dest=tempest.xml flat=yes
+              dest={{ lookup('env', 'PWD') }}/nosetests.xml
+              flat=yes
