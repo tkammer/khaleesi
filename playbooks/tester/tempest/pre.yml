@@ -3,14 +3,23 @@
 
 - name: Configure tempest
   hosts: tester
-  sudo: yes 
+  sudo: yes
   tasks:
+    - copy:
+        dest: "{{ tempest.dir}}/with_venv"
+        mode: 0755
+        content: |
+          #!/bin/bash
+          [[ -d $(dirname $0)/.venv ]] && source $(dirname $0)/.venv/bin/activate
+          exec "$@"
     # FIXME: use non-root user (and HOME path) for configure-tempest.sh,
-    #        after tempest.rpm ships and reads /etc/tempest or ~/tempest.conf (or something in that style) 
+    #        after tempest.rpm ships and reads /etc/tempest or ~/tempest.conf (or something in that style)
     - template: dest=/root/configure-tempest.sh src=../templates/configure-tempest.sh owner=root group=root mode=0755
       register: config_script
-    - command: /root/configure-tempest.sh
+    - command: "{{ tempest.dir }}/with_venv /root/configure-tempest.sh"
       when: config_script|changed
-    - name: initiate testr
-      shell: creates="{{ tempest.dir }}/.testrepository" chdir="{{ tempest.dir }}" testr init
+    - shell: "{{ tempest.dir }}/with_venv testr init"
+      args:
+        chdir: "{{ tempest.dir }}"
+        creates: "{{ tempest.dir }}/.testrepository"
 
