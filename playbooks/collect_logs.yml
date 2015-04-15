@@ -28,11 +28,17 @@
       ignore_errors: true
 
     - name: collect logs
-      shell: tar czPf /tmp/archive.tar.gzip /var/log/rpm.list {{ job.archive|join(' ') }}
+      shell: |
+        mkdir -p /tmp/{{ inventory_hostname }};
+        for F in $(ls -d1 /var/log/rpm.list {{ job.archive|join(' ') }}); do
+          cp -rpL --parents $F /tmp/{{ inventory_hostname }}
+        done
+        cd /tmp
+        tar czf {{ inventory_hostname }}.tar.gzip {{ inventory_hostname }}
       ignore_errors: true
 
     - name: fetch log archive (gzip)
-      fetch: src=/tmp/archive.tar.gzip flat=yes dest=../collected_files/{{ inventory_hostname }}.tar.gzip
+      fetch: src=/tmp/{{ inventory_hostname }}.tar.gzip flat=yes dest=../collected_files/{{ inventory_hostname }}.tar.gzip
       ignore_errors: true
 
 
