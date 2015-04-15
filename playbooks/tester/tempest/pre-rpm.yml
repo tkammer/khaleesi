@@ -1,17 +1,19 @@
 ---
 - name: Install tempest from rpm
   hosts: tester
-  sudo: yes 
+  sudo: yes
   tasks:
-    - template: dest=/etc/yum.repos.d/tempest.repo src=../templates/tempest.repo owner=root group=root mode=0644
+    - template: dest=/etc/yum.repos.d/tempest.repo src=../templates/tempest-master.repo owner=root group=root mode=0644
       register: tempest_repo
+      when: tempest.rpm.release == 'master'
     - command: yum clean all
       when: tempest_repo|changed
+    # TODO: if release != master use rdo/rhos release rpm/tool
     - yum: name=openstack-tempest-{{ tempest.rpm.release }} state=present
       register: tempest_rpm
     # workaround: lp#1431449
     # and opt. lp#1433981
     # also yum ansible task does not enforce downgrade (it's happy with newer/broken version too)
     - command: yum downgrade -y python-neutronclient-2.3.4-1.fc20
-    # workaround: @psedlak - python-oslo-log was missing in tempest-lib deps, rpm has to be rebuild
+    # workaround: @psedlak - python-oslo-log was missing in tempest-lib deps, spec fixed, rpm has to be rebuild
     - yum: name=python-oslo-log state=present
