@@ -47,9 +47,14 @@
   gather_facts: no
   sudo: yes
   tasks:
+    - shell: which NetworkManager &> /dev/null && echo "present" || echo "absent"
+      register: networkmanager
     - name: flip NetworkManager to flat network scripts
-      shell: nohup bash -c 'systemctl stop NetworkManager; systemctl restart network'
+      shell: nohup bash -c "(set -x; service NetworkManager stop && service network start; service network restart) &> /root/switch-nm.log" < /dev/null & exit 0
+      when: networkmanager.stdout == 'present'
     - name: Remove NetworkManager
       service: name=NetworkManager state=stopped enabled=no
+      when: networkmanager.stdout == 'present'
     - name: Enabling the network service
       service: name=network state=started enabled=yes
+      when: networkmanager.stdout == 'present'
