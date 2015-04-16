@@ -60,3 +60,8 @@
         - "{{ rally.outputdir }}/detailed_with_iterations.txt"
         - "{{ rally.outputdir }}/sla.txt"
         - "{{ rally.outputdir }}/sla.json"
+
+    - name: Convert SLA to JUnit
+      shell: "python tools/sla2junit.py {{ rally.outputdir }}/sla.json {{ rally.outputdir }}/nosetests.xml"
+      args:
+          creates: "{{ rally.outputdir }}/nosetests.xml"
