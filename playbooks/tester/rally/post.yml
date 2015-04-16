@@ -62,6 +62,7 @@
         - "{{ rally.outputdir }}/sla.json"
 
     - name: Convert SLA to JUnit
-      shell: "python tools/sla2junit.py {{ rally.outputdir }}/sla.json {{ rally.outputdir }}/nosetests.xml"
-      args:
-          creates: "{{ rally.outputdir }}/nosetests.xml"
+      local_action: shell "python tools/sla2junit.py {{ item }}/sla.json {{ item }}/nosetests.xml" creates="{{ item }}/nosetests.xml"
+      sudo: no
+      with_items:
+        - "{{ lookup('env','WORKSPACE') }}/rally_results/"
