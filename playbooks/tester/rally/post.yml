@@ -61,10 +61,22 @@
         - "{{ rally.outputdir }}/sla.txt"
         - "{{ rally.outputdir }}/sla.json"
 
+#    - name: Convert SLA to JUnit
+#      local_action:
+#        module: command "/usr/bin/which python" register=python_exec
+#      sudo: no
+#    - debug: var=python_exec
+
     - name: Convert SLA to JUnit
-      local_action:
+      delegate_to: localhost
         # TODO(yfried): find out why we can't use implicit "python" and must use explicit path
-        module: command "{{ working_dir }}/tools/sla2junit.py {{ item }}/sla.json {{ item }}/nosetests.xml" creates="{{ item }}/nosetests.xml" executable="/usr/bin/python"
+      shell: python
+      args:
+            - "{{ working_dir }}/tools/sla2junit.py"
+            - "{{ item }}/sla.json"
+            - "{{ item }}/nosetests.xml"
+        creates: "{{ item }}/nosetests.xml"
       sudo: no
       with_items:
         - "{{ lookup('env','WORKSPACE') }}/rally_results"
+
