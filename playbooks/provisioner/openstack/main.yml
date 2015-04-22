@@ -2,26 +2,27 @@
 - name: Create nodes - OpenStack
   hosts: localhost
   gather_facts: no
-  vars:
-    - mgmt_network_name: "{{ provisioner.network.nic.net_1.name }}"
   tasks:
     - name: Create nodes
       nova_compute:
-           auth_url: "{{ provisioner.url }}"
+           auth_url: "{{ provisioner.auth_url }}"
            state: present
            login_username: "{{ provisioner.username }}"
            login_password: "{{ provisioner.password }}"
            login_tenant_name: "{{ provisioner.tenant_name }}"
            name: "{{ item.value.name }}"
-           image_id: "{{ item.value.image_id }}"
+           image_id: "{{ provisioner.images[distro.name][distro.version].id }}"
            key_name: "{{ provisioner.key_name }}"
            flavor_id: "{{ item.value.flavor_id }}"
-           nics: "{{ item.value.nics }}"
+           nics:
+              - net-id: "{{ provisioner.network.network_list.management.id }}"
+              - net-id: "{{ provisioner.network.network_list.data.id }}"
+              - net-id: "{{ provisioner.network.network_list.external.id }}"
            config_drive: True
-           auto_floating_ip: "{{ provisioner.use_floating_ip }}"
+           auto_floating_ip: "{{ provisioner.network.use_floating_ip }}"
            wait_for: 200
       retries: 4
-      with_dict: nodes
+      with_dict: provisioner.nodes
       register: created_nodes
 
     - name: Add created hosts to host list
@@ -31,10 +32,9 @@
             if item.item.value.groups is string
             else item.item.value.groups| join(',') }}"
         ansible_fqdn="{{ item.item.value.hostname }}"
-        ansible_ssh_user="{{ item.item.value.remote_user }}"
+        ansible_ssh_user="{{ distro.images[distro.name][distro.version].remote_user }}"
         ansible_ssh_private_key_file="{{ provisioner.key_file }}"
         ansible_ssh_host={%- if item.public_ip %}{{ item.public_ip }}{%- else %}{{ item.info.addresses[provisioner.network.nic.net_1.name][0].addr }}{% endif %}
-        provisioner_host_addresses="{{ item.info.addresses|to_json }}"
       with_items: created_nodes.results
 
 - name: wait for hosts to get reachable
@@ -50,14 +50,19 @@
   max_fail_percentage: 0
   sudo: yes
   tasks:
+    - name: updating host short name
+      set_fact: inventory_hostname_short="{{ inventory_hostname.split('-')|last }}"
+
     - name: Setup networking (interfaces)
       template:
             src: ../templates/ifcfg-interface.j2
-            dest: /etc/sysconfig/network-scripts/ifcfg-{{ item.interface }}
+            dest: /etc/sysconfig/network-scripts/ifcfg-{{ item.value.label }}
             owner: root
             group: root
             mode: 644
-      with_items: nodes.controller.net_interfaces
+      with_dict:
+          provisioner.nodes[inventory_hostname_short].network.interfaces
       register: reboot_reason
-    - include: "{{ lookup('env', 'PWD') }}/tasks/reboot.yml"
 
+    - include: "{{ lookup('env', 'PWD') }}/tasks/reboot.yml"
+      when: reboot_reason|changed

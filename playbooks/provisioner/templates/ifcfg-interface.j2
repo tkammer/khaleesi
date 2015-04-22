@@ -1,9 +1,6 @@
 #jinja2: trim_blocks: False
-{%- set interface_name = "ansible_%s" | format(item.interface) -%}
-{%- set network_name = "%s" | format(item.network_name) -%}
-DEVICE="{{ item.interface }}"
-IPADDR={% for ip in (hostvars[inventory_hostname].provisioner_host_addresses|from_json)[network_name] %}{% if ip['OS-EXT-IPS:type'] == 'fixed' %}"{{ ip.addr }}"{% endif %}{% endfor %}
-HWADDR="{{ hostvars[inventory_hostname][interface_name].macaddress }}"
-BOOTPROTO=static
-NETMASK="255.255.255.0"
-TYPE=Ethernet
+{%- if item.value.config_params is defined -%}
+{%- for key, value in item.value.config_params.iteritems() %}
+{{ key|upper }}={{ value }}
+{%- endfor %}
+{%- endif -%}
