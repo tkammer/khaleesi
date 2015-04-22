@@ -1,0 +1,17 @@
+#!/bin/bash
+
+
+code=0
+
+... call the wait_for_ssh.sh here --- needs absolute path to it (module is copied to tmp dir, even for local_action)
+... or better move source from wait_for_ssh.sh here
+    ... requires redirecting stdout/stderr to file, and providing it at the end via json keys
+#    - name: Reboot machines
+#      when: reboot_reason|changed
+#      shell: echo "$(( $(date +%s) - $(cat /proc/uptime | sed s/\\..*//) ))"; nohup bash -c 'sleep 1; shutdown -r now' > /root/reboot.log & exit 0
+#      sudo: yes
+#      register: boottime_before_reboot
+
+
+
+echo '{ "changed": True, "rc": '$code' }'
