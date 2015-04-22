@@ -42,7 +42,9 @@
   gather_facts: no
   max_fail_percentage: 0
   tasks:
-    - include: "{{ lookup('env', 'PWD') }}/tasks/wait_for_ssh.yml"
+    - local_action:
+        module: wait_for_ssh host={{ hostvars[inventory_hostname].ansible_ssh_host }} user={{ hostvars[inventory_hostname].ansible_ssh_user }} key={{ hostvars[inventory_hostname].ansible_ssh_private_key_file }}
+      sudo: no
 
 - name: Update network interfaces on nodes - OpenStack
   hosts: openstack_nodes
@@ -64,5 +66,7 @@
           provisioner.nodes[inventory_hostname_short].network.interfaces
       register: reboot_reason
 
-    - include: "{{ lookup('env', 'PWD') }}/tasks/reboot.yml"
+    - local_action:
+        module: wait_for_ssh reboot_first=true host={{ hostvars[inventory_hostname].ansible_ssh_host }} user={{ hostvars[inventory_hostname].ansible_ssh_user }} key={{ hostvars[inventory_hostname].ansible_ssh_private_key_file }}
       when: reboot_reason|changed
+      sudo: no
