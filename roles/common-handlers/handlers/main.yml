@@ -1,19 +1,23 @@
 ---
 - name: reboot
   sudo: no
-  local_action:
-        wait_for_ssh reboot_first=true host={{ hostvars[inventory_hostname].ansible_ssh_host }} user={{ hostvars[inventory_hostname].ansible_ssh_user }} key={{ hostvars[inventory_hostname].ansible_ssh_private_key_file }}
+  delegate_to: localhost
+  wait_for_ssh:
+      reboot_first: true
+      host: "{{ hostvars[inventory_hostname].ansible_ssh_host }}"
+      user: "{{ hostvars[inventory_hostname].ansible_ssh_user }}"
+      key: "{{ hostvars[inventory_hostname].ansible_ssh_private_key_file }}"
 
 - name: reboot_rdo_manager
   sudo: no
-  local_action:
-        wait_for_ssh
-          reboot_first=true
-          ssh_opts="-F ../../../ssh.config.ansible"
-          host="{{ ansible_ssh_host }}"
-          user="root"
-          key="{{ ansible_ssh_private_key_file }}"
-          sudo=false
+  delegate_to: localhost
+  wait_for_ssh:
+      reboot_first: true
+      ssh_opts: "-F ../../../ssh.config.ansible"
+      host: "{{ ansible_ssh_host }}"
+      user: "root"
+      key: "{{ ansible_ssh_private_key_file }}"
+      sudo: false
   notify:
     - Check instance uptime
 

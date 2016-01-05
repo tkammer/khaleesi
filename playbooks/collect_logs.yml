@@ -156,13 +156,19 @@
       ignore_errors: true
 
     - name: extract the logs
-      local_action: unarchive src={{ base_dir }}/khaleesi/collected_files/{{ inventory_hostname }}.tar dest={{ base_dir }}/khaleesi/collected_files/
+      delegate_to: localhost
+      unarchive:
+          src: "{{ base_dir }}/khaleesi/collected_files/{{ inventory_hostname }}.tar"
+          dest: "{{ base_dir }}/khaleesi/collected_files/"
       sudo: no
       ignore_errors: true
       when: job.gzip_logs is defined and job.gzip_logs
 
     - name: delete the tar file after extraction
-      local_action: file path={{ base_dir }}/khaleesi/collected_files/{{ inventory_hostname }}.tar state=absent
+      delegate_to: localhost
+      file:
+          path: "{{ base_dir }}/khaleesi/collected_files/{{ inventory_hostname }}.tar"
+          state: absent
       sudo: no
       ignore_errors: true
       when: job.gzip_logs is defined and job.gzip_logs

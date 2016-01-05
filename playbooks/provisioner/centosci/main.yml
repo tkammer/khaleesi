@@ -39,6 +39,9 @@
   gather_facts: no
   max_fail_percentage: 0
   tasks:
-    - local_action:
-        module: wait_for_ssh host={{ hostvars[inventory_hostname].ansible_ssh_host }} user=root key={{ hostvars[inventory_hostname].ansible_ssh_private_key_file }}
-      sudo: no
+      delegate_to: localhost
+      wait_for_ssh:
+          host: "{{ hostvars[inventory_hostname].ansible_ssh_host }}"
+          user: root
+          key: "{{ hostvars[inventory_hostname].ansible_ssh_private_key_file }}"
+  sudo: no

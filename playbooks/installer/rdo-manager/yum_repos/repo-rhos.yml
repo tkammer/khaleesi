@@ -124,12 +124,12 @@
 
     - name: reboot host
       sudo: no
-      local_action:
-        wait_for_ssh
-          reboot_first=true
-          host="{{ ansible_ssh_host }}"
-          user="root"
-          key="{{ ansible_ssh_private_key_file }}"
-          timeout=900
-          sudo=false
+      delegate_to: localhost
+      wait_for_ssh:
+          reboot_first: true
+          host: "{{ ansible_ssh_host }}"
+          user: root
+          key: "{{ ansible_ssh_private_key_file }}"
+          timeout: 900
+          sudo: false
       when: "'{{ repo_host }}' == 'virthost' and new_kernel.rc == 0"
