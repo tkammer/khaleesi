@@ -11,9 +11,9 @@
         name="host0"
         groups="provisioned"
         ansible_fqdn="{{ lookup('env', 'BEAKER_MACHINE') }}"
-        ansible_ssh_user="{{ provisioner.remote_user }}"
+        ansible_user="{{ provisioner.remote_user }}"
         ansible_ssh_private_key_file="{{ provisioner.key_file }}"
-        ansible_ssh_host="{{ lookup('env', 'BEAKER_MACHINE') }}"
+        ansible_host="{{ lookup('env', 'BEAKER_MACHINE') }}"
 
 - name: Use beaker to provision the machine
   hosts: localhost

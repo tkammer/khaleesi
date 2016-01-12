@@ -1,10 +1,10 @@
 ---
-- include: "{{ base_dir }}/khaleesi/playbooks/group_by.yml ansible_ssh_user=root"
+- include: "{{ base_dir }}/khaleesi/playbooks/group_by.yml ansible_user=root"
 
 - name: Setup openstack repos
   hosts: "{{ repo_host }}:&RedHat"
   vars:
-    - ansible_ssh_user: root
+    - ansible_user: root
   environment:
       http_proxy: "{{ installer.http_proxy_url }}"
   gather_facts: yes
@@ -93,21 +93,21 @@
 # - name: Get build details
 #   hosts: "{{ repo_host }}:&RedHat"
 #   vars:
-#     - ansible_ssh_user: root
+#     - ansible_user: root
 #   roles:
 #     - build_mark/build
 
 - name: Linux common prep (Collect performance data, etc.)
   hosts: "{{ repo_host }}"
   vars:
-    - ansible_ssh_user: root
+    - ansible_user: root
   roles:
     - { role: linux-common }
 
 - name: Update packages on the host
   hosts: "{{ repo_host }}"
   vars:
-    - ansible_ssh_user: root
+    - ansible_user: root
   tasks:
     - name: repolist
       command: yum -d 7 repolist
@@ -127,7 +127,7 @@
       delegate_to: localhost
       wait_for_ssh:
           reboot_first: true
-          host: "{{ ansible_ssh_host }}"
+          host: "{{ ansible_host }}"
           user: root
           key: "{{ ansible_ssh_private_key_file }}"
           timeout: 900

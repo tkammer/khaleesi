@@ -121,9 +121,9 @@
         name: "{{ item.item.value.name }}"
         groups: "{{ item.item.value.groups if item.item.value.groups is string else item.item.value.groups| join(',') }}"
         ansible_fqdn: "{{ item.item.value.hostname }}"
-        ansible_ssh_user: "{{ item.item.value.remote_user }}"
+        ansible_user: "{{ item.item.value.remote_user }}"
         ansible_ssh_private_key_file: "{{ provisioner.key_file }}"
-        ansible_ssh_host: "{%- if item.public_ip %}{{ item.public_ip }}{%- else %}{{ item.info.addresses[provisioner.network.network_list.management.name][0].addr }}{% endif %}"
+        ansible_host: "{%- if item.public_ip %}{{ item.public_ip }}{%- else %}{{ item.info.addresses[provisioner.network.network_list.management.name][0].addr }}{% endif %}"
         eth1_interface_ip: "{{ item.info.addresses[provisioner.network.network_list.data.name][0].addr }}"
       with_items: created_nodes.results
 
@@ -145,7 +145,7 @@
     - name: Add Neutron Floating IPs to host list
       add_host:
         name: "{{ item.item.value.name }}"
-        ansible_ssh_host: "{{ item.public_ip }}"
+        ansible_host: "{{ item.public_ip }}"
       with_items: floatingip.results
       when: floatingip
 
@@ -157,7 +157,7 @@
   tasks:
     - name: Wait for Reachable Nodes
       wait_for:
-          host: "{{ hostvars[inventory_hostname].ansible_ssh_host }}"
+          host: "{{ ansible_host }}"
           port: 22
           search_regex: OpenSSH
           timeout: 600
@@ -205,6 +205,6 @@
       wait_for_ssh:
           reboot_first: "true"
           # delegate_to changes the context for ansible_vars
-          host: "{{ hostvars[inventory_hostname].ansible_ssh_host }}"
-          user: "{{ hostvars[inventory_hostname].ansible_ssh_user }}"
+          host: "{{ hostvars[inventory_hostname].ansible_host }}"
+          user: "{{ hostvars[inventory_hostname].ansible_user }}"
           key: "{{ hostvars[inventory_hostname].ansible_ssh_private_key_file }}"

@@ -10,9 +10,9 @@
     - file: path=/tmp/coverage-data state=touch mode="u=rwx,g=rwx,o=rwx"
 
     - template:
-        owner: "{{ hostvars[inventory_hostname].ansible_ssh_user }}"
-        group: "{{ hostvars[inventory_hostname].ansible_ssh_user }}"
-        dest: "/home/{{ hostvars[inventory_hostname].ansible_ssh_user }}/.coveragerc"
+        owner: "{{ hostvars[inventory_hostname].ansible_user }}"
+        group: "{{ hostvars[inventory_hostname].ansible_user }}"
+        dest: "/home/{{ hostvars[inventory_hostname].ansible_user }}/.coveragerc"
         src: ./templates/my.coveragerc.j2
 
     - template:

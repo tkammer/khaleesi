@@ -3,13 +3,13 @@
   hosts: localhost
   gather_facts: no
   tasks:
-      - name: add hosts to host list
+      - name: Add hosts to host list
         add_host:
             name="{{ item.value.name }}"
             groups="{{ item.value.groups| join(',') }}"
             node_label="{{ item.key }}"
-            ansible_ssh_user="{{ item.value.ssh_user }}"
-            ansible_ssh_host="{{ item.value.ssh_host }}"
+            ansible_user="{{ item.value.ssh_user }}"
+            ansible_host="{{ item.value.ssh_host }}"
             ansible_ssh_private_key_file="{{ item.value.ssh_key_file }}"
         with_dict: provisioner.hosts
 
@@ -33,6 +33,8 @@
 - name: Check if virtualization is supported
   hosts: virthost
   gather_facts: no
+  vars:
+    - ansible_user: root
   sudo: yes
   tasks:
       - name: check if CPU supports INTEL based KVM
@@ -58,6 +60,8 @@
 - name: Enable KVM for intel
   hosts: virthost
   gather_facts: no
+  vars:
+    - ansible_user: root
   sudo: yes
   tasks:
       - name: enable nested KVM support for Intel
@@ -238,9 +242,9 @@
         add_host:
             name="{{ item.item.item[0] }}"
             groups="{{ provisioner.nodes['%s' % item.item.item[0].rstrip('1234567890')].groups | join(',') }}"
-            ansible_ssh_user="root"
+            ansible_user="root"
             ansible_ssh_password="redhat"
-            ansible_ssh_host="{{ item.stdout }}"
+            ansible_host="{{ item.stdout }}"
         when: item.item is defined and item.item.item[1] == "management"
         with_items: vm_ip_list
 
@@ -290,7 +294,7 @@
       - name: update the ssh host name of each machine
         add_host:
             name="{{ item }}"
-            ansible_ssh_host="{{ item }}"
+            ansible_host="{{ item }}"
         with_items: groups['openstack_nodes']
 
       - name: update ansible with the new SSH settings

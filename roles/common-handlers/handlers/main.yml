@@ -4,8 +4,8 @@
   delegate_to: localhost
   wait_for_ssh:
       reboot_first: true
-      host: "{{ hostvars[inventory_hostname].ansible_ssh_host }}"
-      user: "{{ hostvars[inventory_hostname].ansible_ssh_user }}"
+      host: "{{ hostvars[inventory_hostname].ansible_host }}"
+      user: "{{ hostvars[inventory_hostname].ansible_user }}"
       key: "{{ hostvars[inventory_hostname].ansible_ssh_private_key_file }}"
 
 - name: reboot_rdo_manager
@@ -14,7 +14,7 @@
   wait_for_ssh:
       reboot_first: true
       ssh_opts: "-F ../../../ssh.config.ansible"
-      host: "{{ ansible_ssh_host }}"
+      host: "{{ ansible_host }}"
       user: "root"
       key: "{{ ansible_ssh_private_key_file }}"
       sudo: false

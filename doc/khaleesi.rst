@@ -595,7 +595,7 @@ You must create a new `local_host` file. Here again adjust the IP address of you
 
     cat <<EOF > local_hosts
     [undercloud]
-    undercloud groups=undercloud ansible_ssh_host=<ip address of baremetal undercloud host> ansible_ssh_user=stack ansible_ssh_private_key_file=~/.ssh/id_rsa
+    undercloud groups=undercloud ansible_host=<ip address of baremetal undercloud host> ansible_user=stack ansible_ssh_private_key_file=~/.ssh/id_rsa
     [local]
     localhost ansible_connection=local
     EOF

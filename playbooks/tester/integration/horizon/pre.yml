@@ -9,7 +9,7 @@
   vars:
       horizon_hosts_conf: /etc/httpd/conf.d/15-horizon_vhost.conf
   tasks:
-      - lineinfile: dest={{ horizon_hosts_conf }} insertafter="ServerAlias" line="  ServerAlias {{ ansible_ssh_host }}" state=present
+      - lineinfile: dest={{ horizon_hosts_conf }} insertafter="ServerAlias" line="  ServerAlias {{ ansible_host }}" state=present
       - service: name=httpd state=restarted
 
 - name: Get the list of avaialble services

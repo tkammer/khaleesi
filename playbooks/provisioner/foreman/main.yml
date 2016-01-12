@@ -10,8 +10,8 @@
           rebuild: "{{ item.value.rebuild|lower}}"
           node_label: "{{ item.key }}"
           ansible_fqdn: "{{ item.value.fqdn }}"
-          ansible_ssh_user: "{{ item.value.remote_user }}"
-          ansible_ssh_host: "{{ item.value.fqdn }}"
+          ansible_user: "{{ item.value.remote_user }}"
+          ansible_host: "{{ item.value.fqdn }}"
           ansible_ssh_private_key_file: "{{ provisioner.key_file }}"
       with_dict: provisioner.nodes
 
@@ -24,7 +24,7 @@
            auth_url: "{{ provisioner.foreman.auth_url }}"
            username: "{{ provisioner.foreman.username }}"
            password: "{{ provisioner.foreman.password }}"
-           host_id: "{{ hostvars[inventory_hostname].ansible_ssh_host }}"
+           host_id: "{{ hostvars[inventory_hostname].ansible_host }}"
            rebuild: "{{ rebuild }}"
            wait_for_host: "{{ provisioner.foreman.wait_for_host|lower }}"
       retries: 4
@@ -35,14 +35,14 @@
       delegate_to: localhost
       wait_for_ssh:
           user: "root"
-          host: "{{ hostvars[inventory_hostname].ansible_ssh_host }}"
+          host: "{{ hostvars[inventory_hostname].ansible_host }}"
           key: "{{ hostvars[inventory_hostname].ansible_ssh_private_key_file }}"
 
 - name: Check and Enable virtualization support
   hosts: openstack_nodes:virthost
   gather_facts: no
   vars:
-    - ansible_ssh_user: root
+    - ansible_user: root
   tasks:
     - name: Check if CPU supports INTEL based KVM
       shell: egrep -c 'vmx' /proc/cpuinfo
@@ -93,8 +93,8 @@
       delegate_to: localhost
       wait_for_ssh:
           reboot_first: true
-          host: "{{ hostvars[inventory_hostname].ansible_ssh_host }}"
-          user: "{{ hostvars[inventory_hostname].ansible_ssh_user }}"
+          host: "{{ hostvars[inventory_hostname].ansible_host }}"
+          user: "{{ hostvars[inventory_hostname].ansible_user }}"
           key: "{{ hostvars[inventory_hostname].ansible_ssh_private_key_file }}"
       when: update_ifcfgs|changed
       sudo: no

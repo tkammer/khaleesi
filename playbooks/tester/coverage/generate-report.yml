@@ -11,7 +11,7 @@
         - tar
 
     - name: generate coverage report
-      shell: "coverage html --rcfile=/home/{{ hostvars[inventory_hostname].ansible_ssh_user }}/.coveragerc"
+      shell: "coverage html --rcfile=/home/{{ hostvars[inventory_hostname].ansible_user }}/.coveragerc"
 
     - name: pack coverage report
       shell: tar czf /tmp/coverage_html_report.tar.gzip /tmp/coverage_html_report
