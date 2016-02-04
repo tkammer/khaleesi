@@ -15,6 +15,22 @@ Use pip to install from source::
 
   $ pip install -e tools/kcli
 
+Conf
+====
+
+.. note:: Assumes that ``kcli`` is installed, else follow Setup_.
+
+``kcli`` will look for ``kcli.cfg`` in the following order:
+
+#. In working directory: ``./kcli.cfg``
+#. In user home directory: ``~/.kcli.cfg``
+#. In system settings: ``/etc/khaleesi/kcli.cfg``
+
+.. note:: To specify a different directory or different filename, override the
+ lookup order with ``KCLI_CONFIG`` environment variable::
+
+    $ KCLI_CONFIG=/my/config/file.ini kcli --help
+
 Running kcli
 ============
 
@@ -25,3 +41,4 @@ You can get general usage information with the ``--help`` option::
   kcli --help
 
 This displays options you can pass to ``kcli``.
+
