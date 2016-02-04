@@ -7,6 +7,11 @@ kcli - Khaleesi CLI tool
 Setup
 =====
 
+.. note:: On Fedora 23 `BZ#1103566 <https://bugzilla.redhat.com/show_bug.cgi?id=1103566>`_
+ calls for::
+
+  $ dnf install redhat-rpm-config
+
 Use pip to install from source::
 
   $ pip install tools/kcli
