@@ -1,7 +1,7 @@
 from argparse import ArgumentParser, RawTextHelpFormatter
-from execute.execute import *
+
 from execute.core import *
-import conf
+from execute.execute import *
 
 
 def create_parser(options_trees):

@@ -1,12 +1,13 @@
 from os import path
-import ansible.playbook
-from ansible import callbacks
+
 import ansible.color
 import ansible.inventory
+import ansible.playbook
 import ansible.utils
+from ansible import callbacks
 
-import conf
-import core
+from kcli import conf
+from kcli.execute import core
 
 HOSTS_FILE = "hosts"
 LOCAL_HOSTS = "local_hosts"
