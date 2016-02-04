@@ -1,16 +1,17 @@
 #!/usr/bin/env python
 
-import os
 import sys
-import re
-import yaml
-import yamls
-import conf
-from configure import Configuration
-from logger import get_logger
 from logging import WARNING, INFO, DEBUG
+import os
+import re
+
+import yaml
+from configure import Configuration
+
+from kcli import conf
+from kcli.execute.execute import PLAYBOOKS
+from logger import get_logger
 from parse import create_parser
-from execute.execute import PLAYBOOKS
 
 SETTING_FILE_EXT = ".yml"
 kcli_conf = conf.config

@@ -2,8 +2,8 @@
 import argparse
 import os
 import sys
-import conf
 
+from kcli import conf
 
 assert "playbooks" == os.path.basename(conf.PLAYBOOKS_DIR), \
     "Bad path to playbooks"
