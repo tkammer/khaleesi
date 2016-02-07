@@ -47,3 +47,11 @@ You can get general usage information with the ``--help`` option::
 
 This displays options you can pass to ``kcli``.
 
+.. note:: Some setting files are hard-coded to look for the ``$WORKSPACE``
+ environment variable (see `Khaleesi - Cookbook`) that should point to the
+ directory where ``khaleesi`` and ``khaleesi-settings`` have been cloned. You
+ can define it manually to work around that::
+
+  $ export WORKSAPCE=$(dirname `pwd`)
+
+
