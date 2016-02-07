@@ -1,12 +1,13 @@
 from os import path
-import ansible.playbook
-from ansible import callbacks
+
 import ansible.color
 import ansible.inventory
+import ansible.playbook
 import ansible.utils
+from ansible import callbacks
 
-from kcli import core
-
+from kcli import conf
+from kcli.execute import core
 
 HOSTS_FILE = "hosts"
 LOCAL_HOSTS = "local_hosts"
@@ -44,7 +45,7 @@ def execute_ansible(playbook, args):
     hosts = args.inventory or (LOCAL_HOSTS if playbook == PROVISION
                                else HOSTS_FILE)
     playbook = playbook.replace("-", "_") + ".yml"
-    path_to_playbook = path.join(core.PATH_TO_PLAYBOOKS, playbook)
+    path_to_playbook = path.join(conf.PLAYBOOKS_DIR, playbook)
 
     # From ansible-playbook:
     stats = callbacks.AggregateStats()
@@ -60,6 +61,9 @@ def execute_ansible(playbook, args):
         verbose=ansible.utils.VERBOSITY
     )
 
+    module_path = None if not hasattr(conf, 'MODULES_DIR') else \
+        conf.MODULES_DIR
+
     pb = ansible.playbook.PlayBook(
         # From ansible-playbook:
         playbook=path_to_playbook,
@@ -68,6 +72,7 @@ def execute_ansible(playbook, args):
         callbacks=playbook_cb,
         runner_callbacks=runner_cb,
         stats=stats,
+        module_path=module_path
     )
 
     failed_hosts = []
@@ -75,6 +80,8 @@ def execute_ansible(playbook, args):
 
     if args.verbose:
         ansible_cmd = ["ansible-playbook"]
+        if module_path:
+            ansible_cmd.append("-M " + module_path)
         ansible_cmd.append("-" + "v" * args.verbose)
         ansible_cmd.append("-i " + hosts)
         ansible_cmd.append("--extra-vars @" + args.settings)
@@ -111,8 +118,8 @@ def execute_ansible(playbook, args):
             colorize('changed', t['changed'], 'yellow'),
             colorize('unreachable', t['unreachable'], 'red'),
             colorize('failed', t['failures'], 'red')),
-            screen_only=True
-        )
+                          screen_only=True
+                          )
 
         callbacks.display("%s : %s %s %s %s" % (
             hostcolor(h, t, False),
@@ -120,8 +127,8 @@ def execute_ansible(playbook, args):
             colorize('changed', t['changed'], None),
             colorize('unreachable', t['unreachable'], None),
             colorize('failed', t['failures'], None)),
-            log_only=True
-        )
+                          log_only=True
+                          )
 
     print ""
     if len(failed_hosts) > 0:
@@ -141,27 +148,6 @@ def ansible_wrapper(args):
         try:
             execute_ansible(playbook, args)
         except Exception:
+            if args.verbose:
+                raise
             raise Exception("Playbook %s failed!" % playbook)
-
-
-execute_parser = core.subparsers.add_parser('execute',
-                                            help="execute playbooks")
-execute_parser.add_argument('-i', '--inventory',
-                            default=None,
-                            type=lambda x: core.file_exists(execute_parser, x),
-                            help="Inventory file to use. "
-                                 "Default: {lcl}. "
-                                 "NOTE: to reuse old environment use {"
-                                 "host}".
-                            format(lcl=LOCAL_HOSTS, host=HOSTS_FILE))
-execute_parser.add_argument("--provision", action="store_true",
-                            help="provision fresh nodes from server")
-execute_parser.add_argument("--install", action="store_true",
-                            help="install Openstack on nodes")
-execute_parser.add_argument("--test", action="store_true",
-                            help="execute tests")
-execute_parser.add_argument("--collect-logs", action="store_true",
-                            help="Pull logs from nodes")
-execute_parser.add_argument("--cleanup", action="store_true",
-                            help="cleanup nodes")
-execute_parser.set_defaults(func=ansible_wrapper)

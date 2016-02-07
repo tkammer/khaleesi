@@ -1,4 +1,3 @@
-from kcli import core
-from kcli import execute
-
-__VERSION__ = '0.1.0'
+# Contains meta-classes so we need to import it without using.
+from kcli import yamls
+__VERSION__ = '1.0.0'
