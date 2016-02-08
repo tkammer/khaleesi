@@ -10,6 +10,7 @@ assert "playbooks" == os.path.basename(conf.PLAYBOOKS_DIR), \
 
 VERBOSITY = 0
 
+
 def file_exists(prs, filename):
     if not os.path.exists(filename):
         prs.error("The file %s does not exist!" % filename)
