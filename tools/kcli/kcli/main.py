@@ -26,12 +26,13 @@ yaml.SafeDumper.add_representer(
 
 
 def dict_lookup(dic, key, *keys):
-    calling_method_name = sys._getframe().f_back.f_code.co_name
-    current_method_name = sys._getframe().f_code.co_name
-    if current_method_name != calling_method_name:
-        full_key = list(keys)
-        full_key.insert(0, key)
-        LOG.debug("looking up the value of \"%s\"" % ".".join(full_key))
+    if LOG.getEffectiveLevel() <= logging.DEBUG:
+        calling_method_name = sys._getframe().f_back.f_code.co_name
+        current_method_name = sys._getframe().f_code.co_name
+        if current_method_name != calling_method_name:
+            full_key = list(keys)
+            full_key.insert(0, key)
+            LOG.debug("looking up the value of \"%s\"" % ".".join(full_key))
     try:
         if key not in dic:
             if isinstance(key, str) and key.isdigit():

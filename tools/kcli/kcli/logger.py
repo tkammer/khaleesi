@@ -1,7 +1,7 @@
 import logging
 from colorlog import ColoredFormatter
 
-LOGER_NAME = "IRLogger"
+LOGGER_NAME = "IRLogger"
 DEFAULT_LOGLEVEL = logging.WARNING
 
 
@@ -16,10 +16,9 @@ debug_formatter = ColoredFormatter(
     )
 )
 
-LOG = logging.getLogger(LOGER_NAME)
+LOG = logging.getLogger(LOGGER_NAME)
 LOG.setLevel(DEFAULT_LOGLEVEL)
 
-# def init_logger(log_level=logging.WARNING):
 # Create stream handler with debug level
 sh = logging.StreamHandler()
 sh.setLevel(logging.DEBUG)

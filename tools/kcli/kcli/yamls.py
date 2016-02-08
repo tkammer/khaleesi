@@ -75,9 +75,6 @@ def _env_constructor(loader, node):
         try:
             return os.environ[loader.construct_scalar(node)]
         except KeyError:
-            # from kcli import main
-            # import kcli
-
             LOG.error("No environment variable named \"%s\" and default"
                          "isn't defined" % node.value)
             sys.exit(1)
