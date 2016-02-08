@@ -1,9 +1,8 @@
-import yaml
 import sys
+import string
 
-from string import ascii_lowercase, digits
 from configure import Configuration
-
+import yaml
 
 from kcli import logger
 
@@ -11,7 +10,7 @@ from kcli import logger
 LOG = logger.LOG
 
 
-def random_generator(size=32, chars=ascii_lowercase + digits):
+def random_generator(size=32, chars=string.ascii_lowercase + string.digits):
     import random
 
     return ''.join(random.choice(chars) for _ in range(size))

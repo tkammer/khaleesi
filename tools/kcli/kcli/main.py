@@ -12,6 +12,8 @@ from kcli import conf
 from kcli.execute.execute import PLAYBOOKS
 from kcli import logger
 from kcli import parse
+# Contains meta-classes so we need to import it without using.
+from kcli import yamls
 
 SETTING_FILE_EXT = ".yml"
 kcli_conf = conf.config
