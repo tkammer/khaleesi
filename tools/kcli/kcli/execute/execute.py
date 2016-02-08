@@ -117,18 +117,14 @@ def execute_ansible(playbook, args):
             colorize('ok', t['ok'], 'green'),
             colorize('changed', t['changed'], 'yellow'),
             colorize('unreachable', t['unreachable'], 'red'),
-            colorize('failed', t['failures'], 'red')),
-                          screen_only=True
-                          )
+            colorize('failed', t['failures'], 'red')), screen_only=True)
 
         callbacks.display("%s : %s %s %s %s" % (
             hostcolor(h, t, False),
             colorize('ok', t['ok'], None),
             colorize('changed', t['changed'], None),
             colorize('unreachable', t['unreachable'], None),
-            colorize('failed', t['failures'], None)),
-                          log_only=True
-                          )
+            colorize('failed', t['failures'], None)), log_only=True)
 
     print ""
     if len(failed_hosts) > 0:

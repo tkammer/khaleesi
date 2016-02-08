@@ -6,7 +6,7 @@ ENV_VAR_NAME = "KCLI_CONFIG"
 KCLI_CONF_FILE = 'kcli.cfg'
 CWD_PATH = os.path.join(os.getcwd(), KCLI_CONF_FILE)
 USER_PATH = os.path.expanduser('~/.' + KCLI_CONF_FILE)
-SYSTEM_PATH =os.path.join('/etc/khaleesi', KCLI_CONF_FILE)
+SYSTEM_PATH = os.path.join('/etc/khaleesi', KCLI_CONF_FILE)
 
 
 def load_config_file():
@@ -31,11 +31,5 @@ def load_config_file():
 
 config = load_config_file()
 
-
-
-
-
-
 for dir_path in config.options('DEFAULTS'):
     globals()[dir_path.upper()] = config.get('DEFAULTS', dir_path)
-

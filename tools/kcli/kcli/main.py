@@ -165,8 +165,8 @@ class OptionNode(object):
         """
         values = [a_file.split(SETTING_FILE_EXT)[0]
                   for a_file in os.listdir(self.path)
-                  if os.path.isfile(os.path.join(self.path, a_file))
-                  and a_file.endswith(SETTING_FILE_EXT)]
+                  if os.path.isfile(os.path.join(self.path, a_file)) and
+                  a_file.endswith(SETTING_FILE_EXT)]
 
         values.sort()
         return values
@@ -176,8 +176,8 @@ class OptionNode(object):
         Returns a sorted list of sup-options available for the current option
         """
         options = [options_dir for options_dir in os.listdir(self.path)
-                   if os.path.isdir(os.path.join(self.path, options_dir))
-                   and options_dir in self.values]
+                   if os.path.isdir(os.path.join(self.path, options_dir)) and
+                   options_dir in self.values]
 
         options.sort()
         return options
@@ -252,13 +252,13 @@ class OptionsTree(object):
             keys.remove(key)
             if node.option != key.replace("_", "-"):
                 LOG.error("Please provide all ancestor of \"--%s\"" %
-                             key.replace("_", "-"))
+                          key.replace("_", "-"))
                 sys.exit(1)
             ymls.append(os.path.join(node.path, options[key] + ".yml"))
             child_keys = [child_key for child_key in keys
-                          if child_key.startswith(key)
-                          and len(child_key.split("_")) ==
-                          len(key.split("_")) + 1]
+                          if child_key.startswith(key) and
+                          len(child_key.split("_")) == len(key.split("_")) + 1
+                          ]
 
             for child_key in child_keys:
                 step_in(child_key, node.children[options[key]][
@@ -299,8 +299,8 @@ def generate_settings_file(settings_files, extra_vars):
         else:
             if '=' not in extra_var:
                 LOG.error("\"%s\" - extra-var argument must be a path "
-                             "to a setting file or 'key=value' pair" %
-                             extra_var)
+                          "to a setting file or 'key=value' pair" %
+                          extra_var)
                 sys.exit(1)
             key, value = extra_var.split("=")
             dict_insert(settings, value, *key.split("."))
@@ -432,7 +432,7 @@ def main():
             execute_args = parser.parse_args()
         elif args.which not in PLAYBOOKS:
             LOG.debug("No playbook named \"%s\", nothing to execute.\n"
-                         "Please choose from: %s" % (args.which, PLAYBOOKS))
+                      "Please choose from: %s" % (args.which, PLAYBOOKS))
             return
         else:
             args_list = ["execute"]
@@ -448,7 +448,7 @@ def main():
             args_list.append('--collect-logs')
             if args.output_file:
                 LOG.debug("Using the newly created settings file: \"%s\""
-                             % args.output_file)
+                          % args.output_file)
                 args_list.append('--settings=%s' % args.output_file)
             else:
                 from time import time
@@ -458,7 +458,7 @@ def main():
                 with open(tmp_settings_file, 'w') as output_file:
                     output_file.write(output)
                 LOG.debug("Temporary settings file \"%s\" has been created "
-                             "for execution purpose only." % tmp_settings_file)
+                          "for execution purpose only." % tmp_settings_file)
                 args_list.append('--settings=%s' % tmp_settings_file)
 
             execute_args = parser.parse_args(args_list)
@@ -468,7 +468,7 @@ def main():
 
         if not args.output_file and args.which != 'execute':
             LOG.debug("Temporary settings file \"%s\" has been deleted."
-                         % tmp_settings_file)
+                      % tmp_settings_file)
             os.remove(tmp_settings_file)
 
 
