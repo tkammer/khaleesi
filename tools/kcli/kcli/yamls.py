@@ -1,11 +1,14 @@
-import logging
 import yaml
 import sys
 
 from string import ascii_lowercase, digits
 from configure import Configuration
 
-logger = logging.getLogger('logger')
+
+from kcli import logger
+
+
+LOG = logger.LOG
 
 
 def random_generator(size=32, chars=ascii_lowercase + digits):
@@ -72,9 +75,10 @@ def _env_constructor(loader, node):
         try:
             return os.environ[loader.construct_scalar(node)]
         except KeyError:
-            import main
+            # from kcli import main
+            # import kcli
 
-            logger.error("No environment variable named \"%s\" and default"
+            LOG.error("No environment variable named \"%s\" and default"
                          "isn't defined" % node.value)
             sys.exit(1)
 

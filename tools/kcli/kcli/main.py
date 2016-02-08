@@ -1,38 +1,37 @@
 #!/usr/bin/env python
 
-import sys
-from logging import WARNING, INFO, DEBUG
+import logging
 import os
 import re
+import sys
 
 import yaml
-from configure import Configuration
+import configure
 
 from kcli import conf
 from kcli.execute.execute import PLAYBOOKS
-from logger import get_logger
-from parse import create_parser
+from kcli import logger
+from kcli import parse
 
 SETTING_FILE_EXT = ".yml"
 kcli_conf = conf.config
-logger = None
+LOG = logger.LOG
 
 # Representer for Configuration object
 yaml.SafeDumper.add_representer(
-    Configuration,
+    configure.Configuration,
     lambda dumper, value:
     yaml.representer.BaseRepresenter.represent_mapping
     (dumper, u'tag:yaml.org,2002:map', value))
 
 
 def dict_lookup(dic, key, *keys):
-    if logger:
-        calling_method_name = sys._getframe().f_back.f_code.co_name
-        current_method_name = sys._getframe().f_code.co_name
-        if current_method_name != calling_method_name:
-            full_key = list(keys)
-            full_key.insert(0, key)
-            logger.debug("looking up the value of \"%s\"" % ".".join(full_key))
+    calling_method_name = sys._getframe().f_back.f_code.co_name
+    current_method_name = sys._getframe().f_code.co_name
+    if current_method_name != calling_method_name:
+        full_key = list(keys)
+        full_key.insert(0, key)
+        LOG.debug("looking up the value of \"%s\"" % ".".join(full_key))
     try:
         if key not in dic:
             if isinstance(key, str) and key.isdigit():
@@ -42,15 +41,11 @@ def dict_lookup(dic, key, *keys):
         if keys:
             return dict_lookup(dic.get(key, {}), *keys)
         value = dic[key]
-        if logger:
-            logger.debug("value has been found: \"%s\"" % value)
+        LOG.debug("value has been found: \"%s\"" % value)
         return value
     except KeyError:
         err_msg = "Key \"%s\" not found in %s" % (key, dic)
-        if logger:
-            logger.error(err_msg)
-        else:
-            print "ERROR:\t", err_msg
+        LOG.error(err_msg)
         sys.exit(1)
 
 
@@ -253,7 +248,7 @@ class OptionsTree(object):
         def step_in(key, node):
             keys.remove(key)
             if node.option != key.replace("_", "-"):
-                logger.error("Please provide all ancestor of \"--%s\"" %
+                LOG.error("Please provide all ancestor of \"--%s\"" %
                              key.replace("_", "-"))
                 sys.exit(1)
             ymls.append(os.path.join(node.path, options[key] + ".yml"))
@@ -267,7 +262,7 @@ class OptionsTree(object):
                     child_key.replace("_", "-")])
 
         step_in(keys[0], self.root)
-        logger.debug("%s tree settings files:\n%s" % (self.name, ymls))
+        LOG.debug("%s tree settings files:\n%s" % (self.name, ymls))
 
         return ymls
 
@@ -276,19 +271,19 @@ class OptionsTree(object):
 
 
 def merge_settings(settings, file_path):
-    logger.debug("Loading setting file: %s" % file_path)
+    LOG.debug("Loading setting file: %s" % file_path)
     if not os.path.exists(file_path):
-        logger.error("Setting file doesn't found: %s" % file_path)
+        LOG.error("Setting file doesn't found: %s" % file_path)
         sys.exit(1)
 
-    loaded_file = Configuration.from_file(file_path).configure()
+    loaded_file = configure.Configuration.from_file(file_path).configure()
     settings = settings.merge(loaded_file)
 
     return settings
 
 
 def generate_settings_file(settings_files, extra_vars):
-    settings = Configuration.from_dict({})
+    settings = configure.Configuration.from_dict({})
 
     for settings_file in settings_files:
         settings = merge_settings(settings, settings_file)
@@ -300,7 +295,7 @@ def generate_settings_file(settings_files, extra_vars):
 
         else:
             if '=' not in extra_var:
-                logger.error("\"%s\" - extra-var argument must be a path "
+                LOG.error("\"%s\" - extra-var argument must be a path "
                              "to a setting file or 'key=value' pair" %
                              extra_var)
                 sys.exit(1)
@@ -345,14 +340,14 @@ def normalize_file(file_path):
     """
     if not os.path.isabs(file_path):
         abspath = os.path.abspath(file_path)
-        logger.debug(
+        LOG.debug(
             "Setting the absolute path of \"%s\" to: \"%s\""
             % (file_path, abspath)
         )
         file_path = abspath
 
     if not os.path.exists(file_path):
-        logger.error("File not found: %s" % file_path)
+        LOG.error("File not found: %s" % file_path)
         sys.exit(1)
 
     return file_path
@@ -387,20 +382,19 @@ def main():
     for option in kcli_conf.options('ROOT_OPTS'):
         options_trees.append(OptionsTree(settings_dir, option))
 
-    parser = create_parser(options_trees)
+    parser = parse.create_parser(options_trees)
     args = parser.parse_args()
 
     verbose = int(args.verbose)
 
     if args.verbose == 0:
-        args.verbose = WARNING
+        args.verbose = logging.WARNING
     elif args.verbose == 1:
-        args.verbose = INFO
+        args.verbose = logging.INFO
     else:
-        args.verbose = DEBUG
+        args.verbose = logging.DEBUG
 
-    global logger
-    logger = get_logger(args.verbose)
+    LOG.setLevel(args.verbose)
 
     # settings generation stage
     if args.which.lower() != 'execute':
@@ -413,7 +407,7 @@ def main():
 
             settings_files += (options_tree.get_options_ymls(options))
 
-        logger.debug("All settings files to be loaded:\n%s" % settings_files)
+        LOG.debug("All settings files to be loaded:\n%s" % settings_files)
 
         settings = generate_settings_file(settings_files, args.extra_vars)
 
@@ -434,7 +428,7 @@ def main():
         if args.which == 'execute':
             execute_args = parser.parse_args()
         elif args.which not in PLAYBOOKS:
-            logger.debug("No playbook named \"%s\", nothing to execute.\n"
+            LOG.debug("No playbook named \"%s\", nothing to execute.\n"
                          "Please choose from: %s" % (args.which, PLAYBOOKS))
             return
         else:
@@ -450,7 +444,7 @@ def main():
             args_list.append('--' + args.which)
             args_list.append('--collect-logs')
             if args.output_file:
-                logger.debug("Using the newly created settings file: \"%s\""
+                LOG.debug("Using the newly created settings file: \"%s\""
                              % args.output_file)
                 args_list.append('--settings=%s' % args.output_file)
             else:
@@ -460,17 +454,17 @@ def main():
                                     SETTING_FILE_EXT
                 with open(tmp_settings_file, 'w') as output_file:
                     output_file.write(output)
-                logger.debug("Temporary settings file \"%s\" has been created "
+                LOG.debug("Temporary settings file \"%s\" has been created "
                              "for execution purpose only." % tmp_settings_file)
                 args_list.append('--settings=%s' % tmp_settings_file)
 
             execute_args = parser.parse_args(args_list)
 
-        logger.debug("execute parser args: %s" % args)
+        LOG.debug("execute parser args: %s" % args)
         execute_args.func(execute_args)
 
         if not args.output_file and args.which != 'execute':
-            logger.debug("Temporary settings file \"%s\" has been deleted."
+            LOG.debug("Temporary settings file \"%s\" has been deleted."
                          % tmp_settings_file)
             os.remove(tmp_settings_file)
 
