@@ -165,8 +165,8 @@ class OptionNode(object):
         """
         values = [a_file.split(SETTING_FILE_EXT)[0]
                   for a_file in os.listdir(self.path)
-                  if os.path.isfile(os.path.join(self.path, a_file))
-                  and a_file.endswith(SETTING_FILE_EXT)]
+                  if os.path.isfile(os.path.join(self.path, a_file)) and
+                  a_file.endswith(SETTING_FILE_EXT)]
 
         values.sort()
         return values
@@ -176,8 +176,8 @@ class OptionNode(object):
         Returns a sorted list of sup-options available for the current option
         """
         options = [options_dir for options_dir in os.listdir(self.path)
-                   if os.path.isdir(os.path.join(self.path, options_dir))
-                   and options_dir in self.values]
+                   if os.path.isdir(os.path.join(self.path, options_dir)) and
+                   options_dir in self.values]
 
         options.sort()
         return options
@@ -256,9 +256,9 @@ class OptionsTree(object):
                 sys.exit(1)
             ymls.append(os.path.join(node.path, options[key] + ".yml"))
             child_keys = [child_key for child_key in keys
-                          if child_key.startswith(key)
-                          and len(child_key.split("_")) ==
-                          len(key.split("_")) + 1]
+                          if child_key.startswith(key) and
+                          len(child_key.split("_")) == len(key.split("_")) + 1
+                          ]
 
             for child_key in child_keys:
                 step_in(child_key, node.children[options[key]][
