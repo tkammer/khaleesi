@@ -75,7 +75,7 @@ def _env_constructor(loader, node):
             return os.environ[loader.construct_scalar(node)]
         except KeyError:
             LOG.error("No environment variable named \"%s\" and default"
-                         "isn't defined" % node.value)
+                      "isn't defined" % node.value)
             sys.exit(1)
 
     seq = loader.construct_sequence(node)
