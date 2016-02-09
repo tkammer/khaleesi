@@ -13,10 +13,6 @@ from kcli.exceptions import *
 from kcli.execute.execute import PLAYBOOKS
 from kcli import logger
 from kcli import parse
-<<<<<<< 28652d82e3a35bce00df555b9a8dc5fe3af60e08
-=======
-from kcli import exceptions
->>>>>>> Fixes comments from exception hook commit CR
 # Contains meta-classes so we need to import it without using.
 from kcli import yamls
 
@@ -450,11 +446,7 @@ def main():
             args_list.append('--' + args.which)
             args_list.append('--collect-logs')
             if args.output_file:
-<<<<<<< 28652d82e3a35bce00df555b9a8dc5fe3af60e08
-                LOG.debug("Using the newly created settings file: \"%s\""
-=======
                 LOG.debug('Using the newly created settings file: "%s"'
->>>>>>> Fixes comments from exception hook commit CR
                           % args.output_file)
                 args_list.append('--settings=%s' % args.output_file)
             else:
@@ -464,13 +456,8 @@ def main():
                                     SETTING_FILE_EXT
                 with open(tmp_settings_file, 'w') as output_file:
                     output_file.write(output)
-<<<<<<< 28652d82e3a35bce00df555b9a8dc5fe3af60e08
-                LOG.debug("Temporary settings file \"%s\" has been created "
-                          "for execution purpose only." % tmp_settings_file)
-=======
                 LOG.debug('Temporary settings file "%s" has been created for '
                           'execution purpose only.' % tmp_settings_file)
->>>>>>> Fixes comments from exception hook commit CR
                 args_list.append('--settings=%s' % tmp_settings_file)
 
             execute_args = parser.parse_args(args_list)
@@ -479,11 +466,7 @@ def main():
         execute_args.func(execute_args)
 
         if not args.output_file and args.which != 'execute':
-<<<<<<< 28652d82e3a35bce00df555b9a8dc5fe3af60e08
-            LOG.debug("Temporary settings file \"%s\" has been deleted."
-=======
             LOG.debug('Temporary settings file "%s" has been deleted.'
->>>>>>> Fixes comments from exception hook commit CR
                       % tmp_settings_file)
             os.remove(tmp_settings_file)
 
