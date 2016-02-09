@@ -7,6 +7,7 @@ import ansible.utils
 from ansible import callbacks
 
 from kcli import conf
+from kcli.exceptions import IRPlaybookFailedException
 from kcli.execute import core
 
 HOSTS_FILE = "hosts"
@@ -21,6 +22,7 @@ PLAYBOOKS = [PROVISION, "install", "test", "collect-logs", "cleanup"]
 # From ansible-playbook
 def colorize(lead, num, color):
     """ Print 'lead' = 'num' in 'color' """
+
     if num != 0 and color is not None:
         return "%s%s%-15s" % (ansible.color.stringc(lead, color),
                               ansible.color.stringc("=", color),
@@ -139,6 +141,7 @@ def execute_ansible(playbook, args):
 
 def ansible_wrapper(args):
     """Wraps the 'anisble-playbook' CLI."""
+
     playbooks = [p for p in PLAYBOOKS if getattr(args, p, False)]
     if not playbooks:
         core.parser.error("No playbook to execute (%s)" % PLAYBOOKS)
@@ -148,6 +151,4 @@ def ansible_wrapper(args):
         try:
             execute_ansible(playbook, args)
         except Exception:
-            if args.verbose:
-                raise
-            raise Exception("Playbook %s failed!" % playbook)
+            raise IRPlaybookFailedException(playbook)
