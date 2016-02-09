@@ -1,9 +1,13 @@
 import logging
+import sys
+import traceback
+
 from colorlog import ColoredFormatter
+
+from kcli import exceptions
 
 LOGGER_NAME = "IRLogger"
 DEFAULT_LOGLEVEL = logging.WARNING
-
 
 debug_formatter = ColoredFormatter(
     "%(log_color)s%(levelname)-8s%(message)s",
@@ -15,6 +19,28 @@ debug_formatter = ColoredFormatter(
         CRITICAL='bold_red,bg_white',
     )
 )
+
+
+def kcli_traceback_handler(log):
+    """Creates exception hook that sends IRException to log and other
+    exceptions to stdout (default excepthook)
+    :param log: logger to log trace
+    """
+
+    def my_excepthook(exc_type, exc_value, exc_traceback):
+        # sends full exception with trace to log
+        if not isinstance(exc_value, exceptions.IRException):
+            return sys.__excepthook__(exc_type, exc_value, exc_traceback)
+
+        if log.getEffectiveLevel() <= logging.DEBUG:
+            formated_exception = "".join(
+                traceback.format_exception(exc_type, exc_value, exc_traceback))
+            log.error(formated_exception + exc_value.message)
+        else:
+            log.error(exc_value.message)
+
+    sys.excepthook = my_excepthook
+
 
 LOG = logging.getLogger(LOGGER_NAME)
 LOG.setLevel(DEFAULT_LOGLEVEL)
@@ -28,3 +54,5 @@ sh.setFormatter(debug_formatter)
 
 # Create logger and add handler to it
 LOG.addHandler(sh)
+
+kcli_traceback_handler(LOG)

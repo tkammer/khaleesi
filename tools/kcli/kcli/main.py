@@ -8,16 +8,17 @@ import sys
 import yaml
 import configure
 
+from kcli import logger
 from kcli import conf
 from kcli.execute.execute import PLAYBOOKS
-from kcli import logger
 from kcli import parse
+from kcli import exceptions
 # Contains meta-classes so we need to import it without using.
 from kcli import yamls
 
 SETTING_FILE_EXT = ".yml"
-kcli_conf = conf.config
 LOG = logger.LOG
+kcli_conf = conf.config
 
 # Representer for Configuration object
 yaml.SafeDumper.add_representer(
@@ -35,21 +36,23 @@ def dict_lookup(dic, key, *keys):
             full_key = list(keys)
             full_key.insert(0, key)
             LOG.debug("looking up the value of \"%s\"" % ".".join(full_key))
+
+    if key not in dic:
+        if isinstance(key, str) and key.isdigit():
+            key = int(key)
+        elif isinstance(key, int):
+            key = str(key)
+
+    if keys:
+        return dict_lookup(dic.get(key, {}), *keys)
+
     try:
-        if key not in dic:
-            if isinstance(key, str) and key.isdigit():
-                key = int(key)
-            elif isinstance(key, int):
-                key = str(key)
-        if keys:
-            return dict_lookup(dic.get(key, {}), *keys)
         value = dic[key]
-        LOG.debug("value has been found: \"%s\"" % value)
-        return value
     except KeyError:
-        err_msg = "Key \"%s\" not found in %s" % (key, dic)
-        LOG.error(err_msg)
-        sys.exit(1)
+        raise exceptions.IRKeyNotFoundException(key, dic)
+
+    LOG.debug("value has been found: \"%s\"" % value)
+    return value
 
 
 def dict_insert(dic, val, key, *keys):
@@ -72,14 +75,16 @@ def validate_settings_dir(settings_dir=None):
     3. Settings dir in the current working dir
     :param settings_dir: path given as argument by a user
     :return: path to settings dir (str)
-    :raise: ValueError: when path to the settings dir doesn't exist
+    :raise: IRFileNotFoundException: when the path to the settings dir doesn't
+            exist
     """
     settings_dir = settings_dir or os.environ.get(
         'KHALEESI_SETTINGS') or os.path.join(os.getcwd(), "settings", "")
 
     if not os.path.exists(settings_dir):
-        raise ValueError(
-            "Path to settings dir doesn't exist: %s" % settings_dir)
+        raise exceptions.IRFileNotFoundException(
+            settings_dir,
+            "Settings dir doesn't exist: ")
 
     return settings_dir
 
@@ -251,9 +256,8 @@ class OptionsTree(object):
         def step_in(key, node):
             keys.remove(key)
             if node.option != key.replace("_", "-"):
-                LOG.error("Please provide all ancestor of \"--%s\"" %
-                             key.replace("_", "-"))
-                sys.exit(1)
+                raise exceptions.IRMissingAncestorException(key)
+
             ymls.append(os.path.join(node.path, options[key] + ".yml"))
             child_keys = [child_key for child_key in keys
                           if child_key.startswith(key)
@@ -276,8 +280,7 @@ class OptionsTree(object):
 def merge_settings(settings, file_path):
     LOG.debug("Loading setting file: %s" % file_path)
     if not os.path.exists(file_path):
-        LOG.error("Setting file doesn't found: %s" % file_path)
-        sys.exit(1)
+        raise exceptions.IRFileNotFoundException(file_path)
 
     loaded_file = configure.Configuration.from_file(file_path).configure()
     settings = settings.merge(loaded_file)
@@ -298,10 +301,7 @@ def generate_settings_file(settings_files, extra_vars):
 
         else:
             if '=' not in extra_var:
-                LOG.error("\"%s\" - extra-var argument must be a path "
-                             "to a setting file or 'key=value' pair" %
-                             extra_var)
-                sys.exit(1)
+                raise exceptions.IRExtraVarsException(extra_var)
             key, value = extra_var.split("=")
             dict_insert(settings, value, *key.split("."))
 
@@ -350,8 +350,7 @@ def normalize_file(file_path):
         file_path = abspath
 
     if not os.path.exists(file_path):
-        LOG.error("File not found: %s" % file_path)
-        sys.exit(1)
+        raise exceptions.IRFileNotFoundException(file_path)
 
     return file_path
 
@@ -447,8 +446,8 @@ def main():
             args_list.append('--' + args.which)
             args_list.append('--collect-logs')
             if args.output_file:
-                LOG.debug("Using the newly created settings file: \"%s\""
-                             % args.output_file)
+                LOG.debug('Using the newly created settings file: "%s"'
+                          % args.output_file)
                 args_list.append('--settings=%s' % args.output_file)
             else:
                 from time import time
@@ -457,8 +456,8 @@ def main():
                                     SETTING_FILE_EXT
                 with open(tmp_settings_file, 'w') as output_file:
                     output_file.write(output)
-                LOG.debug("Temporary settings file \"%s\" has been created "
-                             "for execution purpose only." % tmp_settings_file)
+                LOG.debug('Temporary settings file "%s" has been created for '
+                          'execution purpose only.' % tmp_settings_file)
                 args_list.append('--settings=%s' % tmp_settings_file)
 
             execute_args = parser.parse_args(args_list)
@@ -467,8 +466,8 @@ def main():
         execute_args.func(execute_args)
 
         if not args.output_file and args.which != 'execute':
-            LOG.debug("Temporary settings file \"%s\" has been deleted."
-                         % tmp_settings_file)
+            LOG.debug('Temporary settings file "%s" has been deleted.'
+                      % tmp_settings_file)
             os.remove(tmp_settings_file)
 
 
