@@ -1,6 +1,6 @@
 node:
     prefix:
-        - !lookup installer.short_typeaaa
+        - !lookup installer.short_type
 
 hostname:
     prefix:
