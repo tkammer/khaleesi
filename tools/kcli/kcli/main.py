@@ -9,6 +9,7 @@ import yaml
 import configure
 
 from kcli import conf
+from kcli.exceptions import *
 from kcli.execute.execute import PLAYBOOKS
 from kcli import logger
 from kcli import parse
@@ -16,8 +17,8 @@ from kcli import parse
 from kcli import yamls
 
 SETTING_FILE_EXT = ".yml"
-kcli_conf = conf.config
 LOG = logger.LOG
+kcli_conf = conf.config
 
 # Representer for Configuration object
 yaml.SafeDumper.add_representer(
@@ -47,9 +48,7 @@ def dict_lookup(dic, key, *keys):
         LOG.debug("value has been found: \"%s\"" % value)
         return value
     except KeyError:
-        err_msg = "Key \"%s\" not found in %s" % (key, dic)
-        LOG.error(err_msg)
-        sys.exit(1)
+        raise IRKeyNotFoundException(key, dic)
 
 
 def dict_insert(dic, val, key, *keys):
@@ -72,14 +71,15 @@ def validate_settings_dir(settings_dir=None):
     3. Settings dir in the current working dir
     :param settings_dir: path given as argument by a user
     :return: path to settings dir (str)
-    :raise: ValueError: when path to the settings dir doesn't exist
+    :raise: IRFileNotFoundException: when the path to the settings dir doesn't
+            exist
     """
     settings_dir = settings_dir or os.environ.get(
         'KHALEESI_SETTINGS') or os.path.join(os.getcwd(), "settings", "")
 
     if not os.path.exists(settings_dir):
-        raise ValueError(
-            "Path to settings dir doesn't exist: %s" % settings_dir)
+        raise IRFileNotFoundException(settings_dir, "Settings dir doesn't "
+                                                    "exist: ")
 
     return settings_dir
 
@@ -251,9 +251,8 @@ class OptionsTree(object):
         def step_in(key, node):
             keys.remove(key)
             if node.option != key.replace("_", "-"):
-                LOG.error("Please provide all ancestor of \"--%s\"" %
-                          key.replace("_", "-"))
-                sys.exit(1)
+                raise IRMissingAncestorException(key)
+
             ymls.append(os.path.join(node.path, options[key] + ".yml"))
             child_keys = [child_key for child_key in keys
                           if child_key.startswith(key) and
@@ -276,8 +275,7 @@ class OptionsTree(object):
 def merge_settings(settings, file_path):
     LOG.debug("Loading setting file: %s" % file_path)
     if not os.path.exists(file_path):
-        LOG.error("Setting file doesn't found: %s" % file_path)
-        sys.exit(1)
+        raise IRFileNotFoundException(file_path)
 
     loaded_file = configure.Configuration.from_file(file_path).configure()
     settings = settings.merge(loaded_file)
@@ -298,10 +296,7 @@ def generate_settings_file(settings_files, extra_vars):
 
         else:
             if '=' not in extra_var:
-                LOG.error("\"%s\" - extra-var argument must be a path "
-                          "to a setting file or 'key=value' pair" %
-                          extra_var)
-                sys.exit(1)
+                raise IRExtraVarsException(extra_var)
             key, value = extra_var.split("=")
             dict_insert(settings, value, *key.split("."))
 
@@ -350,8 +345,7 @@ def normalize_file(file_path):
         file_path = abspath
 
     if not os.path.exists(file_path):
-        LOG.error("File not found: %s" % file_path)
-        sys.exit(1)
+        raise IRFileNotFoundException(file_path)
 
     return file_path
 
