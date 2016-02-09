@@ -6,8 +6,7 @@ import ansible.playbook
 import ansible.utils
 from ansible import callbacks
 
-from kcli import conf
-from kcli.exceptions import IRPlaybookFailedException
+from kcli import conf, exceptions
 from kcli.execute import core
 
 HOSTS_FILE = "hosts"
@@ -147,4 +146,4 @@ def ansible_wrapper(args):
         try:
             execute_ansible(playbook, args)
         except Exception:
-            raise IRPlaybookFailedException(playbook)
+            raise exceptions.IRPlaybookFailedException(playbook)

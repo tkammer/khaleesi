@@ -1,6 +1,11 @@
 import ConfigParser
 import os
+<<<<<<< 28652d82e3a35bce00df555b9a8dc5fe3af60e08
 import sys
+=======
+
+from kcli import exceptions
+>>>>>>> Fixes comments from exception hook commit CR
 
 from kcli.exceptions import IRFileNotFoundException
 
@@ -28,9 +33,10 @@ def load_config_file():
             return _config
 
     conf_file_paths = "\n".join([CWD_PATH, USER_PATH, SYSTEM_PATH])
-    raise IRFileNotFoundException(conf_file_paths,
-                                  "IR configuration doesn't found, please "
-                                  "set it in one of the following paths:\n")
+    raise exceptions.IRFileNotFoundException(
+        conf_file_paths,
+        "IR configuration not found. "
+        "Please set it in one of the following paths:\n")
 
 
 config = load_config_file()

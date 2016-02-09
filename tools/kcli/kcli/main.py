@@ -13,6 +13,10 @@ from kcli.exceptions import *
 from kcli.execute.execute import PLAYBOOKS
 from kcli import logger
 from kcli import parse
+<<<<<<< 28652d82e3a35bce00df555b9a8dc5fe3af60e08
+=======
+from kcli import exceptions
+>>>>>>> Fixes comments from exception hook commit CR
 # Contains meta-classes so we need to import it without using.
 from kcli import yamls
 
@@ -36,19 +40,23 @@ def dict_lookup(dic, key, *keys):
             full_key = list(keys)
             full_key.insert(0, key)
             LOG.debug("looking up the value of \"%s\"" % ".".join(full_key))
+
+    if key not in dic:
+        if isinstance(key, str) and key.isdigit():
+            key = int(key)
+        elif isinstance(key, int):
+            key = str(key)
+
+    if keys:
+        return dict_lookup(dic.get(key, {}), *keys)
+
     try:
-        if key not in dic:
-            if isinstance(key, str) and key.isdigit():
-                key = int(key)
-            elif isinstance(key, int):
-                key = str(key)
-        if keys:
-            return dict_lookup(dic.get(key, {}), *keys)
         value = dic[key]
-        LOG.debug("value has been found: \"%s\"" % value)
-        return value
     except KeyError:
-        raise IRKeyNotFoundException(key, dic)
+        raise exceptions.IRKeyNotFoundException(key, dic)
+
+    LOG.debug("value has been found: \"%s\"" % value)
+    return value
 
 
 def dict_insert(dic, val, key, *keys):
@@ -78,8 +86,9 @@ def validate_settings_dir(settings_dir=None):
         'KHALEESI_SETTINGS') or os.path.join(os.getcwd(), "settings", "")
 
     if not os.path.exists(settings_dir):
-        raise IRFileNotFoundException(settings_dir, "Settings dir doesn't "
-                                                    "exist: ")
+        raise exceptions.IRFileNotFoundException(
+            settings_dir,
+            "Settings dir doesn't exist: ")
 
     return settings_dir
 
@@ -251,7 +260,7 @@ class OptionsTree(object):
         def step_in(key, node):
             keys.remove(key)
             if node.option != key.replace("_", "-"):
-                raise IRMissingAncestorException(key)
+                raise exceptions.IRMissingAncestorException(key)
 
             ymls.append(os.path.join(node.path, options[key] + ".yml"))
             child_keys = [child_key for child_key in keys
@@ -275,7 +284,7 @@ class OptionsTree(object):
 def merge_settings(settings, file_path):
     LOG.debug("Loading setting file: %s" % file_path)
     if not os.path.exists(file_path):
-        raise IRFileNotFoundException(file_path)
+        raise exceptions.IRFileNotFoundException(file_path)
 
     loaded_file = configure.Configuration.from_file(file_path).configure()
     settings = settings.merge(loaded_file)
@@ -296,7 +305,7 @@ def generate_settings_file(settings_files, extra_vars):
 
         else:
             if '=' not in extra_var:
-                raise IRExtraVarsException(extra_var)
+                raise exceptions.IRExtraVarsException(extra_var)
             key, value = extra_var.split("=")
             dict_insert(settings, value, *key.split("."))
 
@@ -345,7 +354,7 @@ def normalize_file(file_path):
         file_path = abspath
 
     if not os.path.exists(file_path):
-        raise IRFileNotFoundException(file_path)
+        raise exceptions.IRFileNotFoundException(file_path)
 
     return file_path
 
@@ -441,7 +450,11 @@ def main():
             args_list.append('--' + args.which)
             args_list.append('--collect-logs')
             if args.output_file:
+<<<<<<< 28652d82e3a35bce00df555b9a8dc5fe3af60e08
                 LOG.debug("Using the newly created settings file: \"%s\""
+=======
+                LOG.debug('Using the newly created settings file: "%s"'
+>>>>>>> Fixes comments from exception hook commit CR
                           % args.output_file)
                 args_list.append('--settings=%s' % args.output_file)
             else:
@@ -451,8 +464,13 @@ def main():
                                     SETTING_FILE_EXT
                 with open(tmp_settings_file, 'w') as output_file:
                     output_file.write(output)
+<<<<<<< 28652d82e3a35bce00df555b9a8dc5fe3af60e08
                 LOG.debug("Temporary settings file \"%s\" has been created "
                           "for execution purpose only." % tmp_settings_file)
+=======
+                LOG.debug('Temporary settings file "%s" has been created for '
+                          'execution purpose only.' % tmp_settings_file)
+>>>>>>> Fixes comments from exception hook commit CR
                 args_list.append('--settings=%s' % tmp_settings_file)
 
             execute_args = parser.parse_args(args_list)
@@ -461,7 +479,11 @@ def main():
         execute_args.func(execute_args)
 
         if not args.output_file and args.which != 'execute':
+<<<<<<< 28652d82e3a35bce00df555b9a8dc5fe3af60e08
             LOG.debug("Temporary settings file \"%s\" has been deleted."
+=======
+            LOG.debug('Temporary settings file "%s" has been deleted.'
+>>>>>>> Fixes comments from exception hook commit CR
                       % tmp_settings_file)
             os.remove(tmp_settings_file)
 
