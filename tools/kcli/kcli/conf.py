@@ -1,11 +1,7 @@
 import ConfigParser
 import os
-<<<<<<< 28652d82e3a35bce00df555b9a8dc5fe3af60e08
-import sys
-=======
 
 from kcli import exceptions
->>>>>>> Fixes comments from exception hook commit CR
 
 from kcli.exceptions import IRFileNotFoundException
 
