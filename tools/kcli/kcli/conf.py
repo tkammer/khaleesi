@@ -1,7 +1,7 @@
 import ConfigParser
 import os
-from kcli.exceptions import IRFileNotFoundException
-import sys
+
+from kcli import exceptions
 
 ENV_VAR_NAME = "KCLI_CONFIG"
 KCLI_CONF_FILE = 'kcli.cfg'
@@ -27,9 +27,10 @@ def load_config_file():
             return _config
 
     conf_file_paths = "\n".join([CWD_PATH, USER_PATH, SYSTEM_PATH])
-    raise IRFileNotFoundException(conf_file_paths,
-                                  "IR configuration doesn't found, please "
-                                  "set it in one of the following paths:\n")
+    raise exceptions.IRFileNotFoundException(
+        conf_file_paths,
+        "IR configuration not found. "
+        "Please set it in one of the following paths:\n")
 
 
 config = load_config_file()

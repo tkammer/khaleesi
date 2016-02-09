@@ -4,7 +4,7 @@ import traceback
 
 from colorlog import ColoredFormatter
 
-from exceptions import IRException
+from kcli import exceptions
 
 LOGGER_NAME = "IRLogger"
 DEFAULT_LOGLEVEL = logging.WARNING
@@ -29,15 +29,15 @@ def kcli_traceback_handler(log):
 
     def my_excepthook(exc_type, exc_value, exc_traceback):
         # sends full exception with trace to log
-        if not isinstance(exc_value, IRException):
+        if not isinstance(exc_value, exceptions.IRException):
             return sys.__excepthook__(exc_type, exc_value, exc_traceback)
 
         if log.getEffectiveLevel() <= logging.DEBUG:
             formated_exception = "".join(
                 traceback.format_exception(exc_type, exc_value, exc_traceback))
-            log.error(formated_exception + exc_value.msg)
+            log.error(formated_exception + exc_value.message)
         else:
-            log.error(exc_value.msg)
+            log.error(exc_value.message)
 
     sys.excepthook = my_excepthook
 

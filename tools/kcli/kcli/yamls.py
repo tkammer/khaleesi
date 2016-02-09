@@ -4,7 +4,7 @@ from configure import Configuration
 import yaml
 
 from kcli import logger
-from kcli.exceptions import IRMissingEnvironmentVariableExcption, IRException
+from kcli import exceptions
 
 LOG = logger.LOG
 
@@ -36,7 +36,8 @@ def _random_constructor(loader, node):
 def _limit_chars(_string, length):
     length = int(length)
     if length < 0:
-        raise IRException('length to crop should be int, not ' + str(length))
+        raise exceptions.IRException('length to crop should be int, not ' +
+                                     str(length))
 
     return _string[:length]
 
@@ -51,7 +52,8 @@ def _limit_chars_constructor(loader, node):
 
     params = loader.construct_sequence(node)
     if len(params) != 2:
-        raise IRException('limit_chars requires two params: string length')
+        raise exceptions.IRException(
+            'limit_chars requires two params: string length')
     return _limit_chars(params[0], params[1])
 
 
@@ -69,12 +71,12 @@ def _env_constructor(loader, node):
 
     import os
     # scalar node or string has no defaults,
-    # raise IRMissingEnvironmentVariableExcption if absent
+    # raise IRUndefinedEnvironmentVariableExcption if absent
     if isinstance(node, yaml.nodes.ScalarNode):
         try:
             return os.environ[loader.construct_scalar(node)]
         except KeyError:
-            raise IRMissingEnvironmentVariableExcption(node.value)
+            raise exceptions.IRUndefinedEnvironmentVariableExcption(node.value)
 
     seq = loader.construct_sequence(node)
     var = seq[0]
