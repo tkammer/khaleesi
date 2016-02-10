@@ -8,11 +8,13 @@ import sys
 import yaml
 import configure
 
-from kcli import conf
-from kcli.exceptions import *
-from kcli.execute.execute import PLAYBOOKS
+# logger should be created first
 from kcli import logger
+
+from kcli import conf
+from kcli.execute.execute import PLAYBOOKS
 from kcli import parse
+from kcli import exceptions
 # Contains meta-classes so we need to import it without using.
 from kcli import yamls
 
