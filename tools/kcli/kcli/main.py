@@ -8,7 +8,9 @@ import sys
 import yaml
 import configure
 
+# logger should be created first
 from kcli import logger
+
 from kcli import conf
 from kcli.execute.execute import PLAYBOOKS
 from kcli import parse

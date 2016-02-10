@@ -2,11 +2,11 @@ import logging
 import sys
 import traceback
 
-from colorlog import ColoredFormatter
+import colorlog
 
 from kcli import exceptions
 
-logger_formatter = ColoredFormatter(
+logger_formatter = colorlog.ColoredFormatter(
     "%(log_color)s%(levelname)-8s%(message)s",
     log_colors=dict(
         DEBUG='blue',
@@ -37,7 +37,7 @@ LOG.addHandler(sh)
 def ir_excepthook(exc_type, exc_value, exc_traceback):
     """
     exception hook that sends IRException to log and other exceptions to
-    stdout (default excepthook)
+    stderr (default excepthook)
     """
 
     # sends full exception with trace to log
