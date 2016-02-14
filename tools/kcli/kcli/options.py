@@ -1,3 +1,9 @@
+"""
+This module is the building blocks for the options parsing tree.
+It contains the data structures that hold available options & values in a
+given directory.
+"""
+
 import os
 
 import yaml
@@ -10,6 +16,13 @@ LOG = logger.LOG
 
 
 class OptionNode(object):
+    """
+    represents an option and its properties:
+      - parent option
+      - available values
+      - option's path
+      - sub options
+    """
     def __init__(self, path, parent=None):
         self.path = path
         self.option = self.path.split("/")[-1]
@@ -25,9 +38,7 @@ class OptionNode(object):
             self.parent.children[self.parent_value][self.option] = self
 
     def _get_values(self):
-        """
-        Returns a sorted list of values available for the current option
-        """
+        """Returns a sorted list of values available for the current option"""
         values = [a_file.split(conf.YAML_EXT)[0]
                   for a_file in os.listdir(self.path)
                   if os.path.isfile(os.path.join(self.path, a_file)) and
@@ -49,6 +60,10 @@ class OptionNode(object):
 
 
 class OptionsTree(object):
+    """
+    Tree represents hierarchy of options from rhe same kind (provisioner,
+    installer etc...)
+    """
     def __init__(self, settings_dir, option):
         self.root = None
         self.name = option
@@ -60,9 +75,7 @@ class OptionsTree(object):
         self.init_options_dict(self.root)
 
     def build_tree(self):
-        """
-        Builds the OptionsTree
-        """
+        """Builds the OptionsTree"""
         self.add_node(self.root_dir, None)
 
     def add_node(self, path, parent):
@@ -121,6 +134,9 @@ class OptionsTree(object):
         keys.sort()
 
         def step_in(key, node):
+            """recursive method that returns the settings files of a given
+            options
+            """
             keys.remove(key)
             if node.option != key.replace("_", "-"):
                 raise exceptions.IRMissingAncestorException(key)

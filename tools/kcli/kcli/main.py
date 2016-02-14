@@ -52,8 +52,8 @@ def main():
 
         LOG.debug("All settings files to be loaded:\n%s" % settings_files)
 
-        settings = utils.generate_settings_file(settings_files,
-                                                args.extra_vars)
+        settings = utils.generate_settings(settings_files,
+                                           args.extra_vars)
 
         # todo: move into Lookup
         output = utils.lookup2lookup(settings)

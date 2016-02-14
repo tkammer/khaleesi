@@ -1,3 +1,7 @@
+"""
+This module contains the tools for handling YAML files and tags.
+"""
+
 import re
 import string
 

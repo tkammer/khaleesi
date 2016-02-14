@@ -1,3 +1,7 @@
+"""
+This module provide some general helper methods
+"""
+
 import os
 import logging
 import re
@@ -7,6 +11,7 @@ import configure
 import yaml
 
 import kcli.yamls
+import kcli.conf
 from kcli import exceptions
 from kcli import logger
 
@@ -72,10 +77,7 @@ def dict_insert(dic, val, key, *keys):
         dic[key] = val
         return
 
-    if key not in dic:
-        dic[key] = {}
-
-    dict_insert(dic[key], val, *keys)
+    dict_insert(dic.setdefault(key, {}), val, *keys)
 
 
 # TODO: remove "settings" references in project
@@ -85,7 +87,6 @@ def validate_settings_dir(settings_dir=None):
     Path is set in the following priority:
     1. Method argument
     2. System environment variable
-    3. Settings dir in the current working dir
 
     :param settings_dir: path given as argument by a user
     :return: path to settings dir (str)
@@ -93,7 +94,7 @@ def validate_settings_dir(settings_dir=None):
             exist
     """
     settings_dir = settings_dir or os.environ.get(
-        'KHALEESI_SETTINGS') or os.path.join(os.getcwd(), "settings", "")
+        kcli.conf.KHALEESI_DIR_ENV_VAR)
 
     if not os.path.exists(settings_dir):
         raise exceptions.IRFileNotFoundException(
@@ -103,10 +104,10 @@ def validate_settings_dir(settings_dir=None):
     return settings_dir
 
 
-def merge_settings(settings, file_path):
+def update_settings(settings, file_path):
     """merge settings in 'file_path' with 'settings'
 
-    :param settings: settings to be merge with
+    :param settings: settings to be merge with (configure.Configuration)
     :param file_path: path to file with settings to be merged
     :return: merged settings
     """
@@ -120,24 +121,27 @@ def merge_settings(settings, file_path):
     return settings
 
 
-def generate_settings_file(settings_files, extra_vars):
-    """Generate one settings file from a given list of settings files and
-    extra-vars
+def generate_settings(settings_files, extra_vars):
+    """Generate one settings object (configure.Configuration) by merging all
+    files in settings file & extra-vars
+
+    files in 'settings_files' are the first to be merged and after them the
+    'extra_vars'
 
     :param settings_files: list of paths to settings files
     :param extra_vars: list of extra-vars
-    :return: dictionary with merging results of all settings file and
-    extra-vars
+    :return: Configuration object with merging results of all settings
+    files and extra-vars
     """
     settings = configure.Configuration.from_dict({})
 
     for settings_file in settings_files:
-        settings = merge_settings(settings, settings_file)
+        settings = update_settings(settings, settings_file)
 
     for extra_var in extra_vars:
         if extra_var.startswith('@'):
             settings_file = normalize_file(extra_var[1:])
-            settings = merge_settings(settings, settings_file)
+            settings = update_settings(settings, settings_file)
 
         else:
             if '=' not in extra_var:
@@ -156,6 +160,7 @@ def generate_settings_file(settings_files, extra_vars):
 def in_string_lookup(settings):
     """convert strings contain the '!lookup' tag in them and don't
     already converted into Lookup objects.
+    (in case of strings that contain and don't start with '!lookup')
 
     :param settings: a settings dictionary to search and convert lookup from
     """

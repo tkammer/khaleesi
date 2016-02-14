@@ -11,6 +11,7 @@ USER_PATH = os.path.expanduser('~/.' + KCLI_CONF_FILE)
 SYSTEM_PATH = os.path.join('/etc/khaleesi', KCLI_CONF_FILE)
 YAML_EXT = ".yml"
 TMP_OUTPUT_FILE = 'kcli_settings_' + str(time.time()) + YAML_EXT
+KHALEESI_DIR_ENV_VAR = 'KHALEESI_SETTINGS'
 
 
 def load_config_file():
