@@ -19,6 +19,7 @@
   hosts: net_prov
   gather_facts: no
   tasks:
+    - debug: var="{{ provisioner.network.network_list }}"
     - name: Create networks
       os_network:
           state: present
@@ -29,7 +30,7 @@
               project_name: "{{ provisioner.tenant_name }}"
           name: "{{ item }}"
       register: "networks"
-      with_items: provisioner.network.network_list.values()|map(attribute='name')|list
+      with_items: "{{ provisioner.network.network_list.values()|map(attribute='name')|list }}"
 
 - name: Create subnets
   hosts: net_prov
