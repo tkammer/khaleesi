@@ -6,6 +6,9 @@ import json
 import codecs
 import locale
 
+from ansible.plugins.callback import Callbackbase
+
+
 TIME_FORMAT = "%b %d %Y %H:%M:%S"
 MARK_FORMAT = "%(now)s ======== MARK ========\n"
 MSG_FORMAT = "%(now)s - %(category)s - %(data)s\n\n"
@@ -55,7 +58,7 @@ def log(host, category, data):
             fd.write(RESULTS_END)
 
 
-class CallbackModule(object):
+class CallbackModule(Callbackbase):
     """
     logs playbook results, per host, in /tmp/ansible/stdstream_logs
     """

@@ -1,7 +1,9 @@
 from datetime import datetime
 
+from ansible.plugins.callback import Callbackbase
 
-class CallbackModule(object):
+
+class CallbackModule(Callbackbase):
     __color = '\033[01;30m'
     __endcolor = '\033[00m'
 
