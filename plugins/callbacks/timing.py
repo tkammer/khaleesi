@@ -1,6 +1,10 @@
 from datetime import datetime
 
-from ansible.plugins.callback import CallbackBase
+try:
+    from ansible.plugins.callback import CallbackBase
+    ANSIBLE2 = True
+except ImportError:
+    ANSIBLE2 = False
 
 
 class CallbackModule(CallbackBase):
