@@ -3,7 +3,7 @@
   hosts: localhost
   gather_facts: no
   tasks:
-      - name: Add hosts to host list
+      - name: add hosts to host list
         add_host:
             name="{{ item.value.name }}"
             groups="{{ item.value.groups| join(',') }}"

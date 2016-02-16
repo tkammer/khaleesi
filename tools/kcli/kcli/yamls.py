@@ -1,14 +1,15 @@
-import logging
-import yaml
-import sys
+import string
 
-from string import ascii_lowercase, digits
 from configure import Configuration
+import yaml
 
-logger = logging.getLogger('logger')
+from kcli import logger
+from kcli import exceptions
+
+LOG = logger.LOG
 
 
-def random_generator(size=32, chars=ascii_lowercase + digits):
+def random_generator(size=32, chars=string.ascii_lowercase + string.digits):
     import random
 
     return ''.join(random.choice(chars) for _ in range(size))
@@ -35,8 +36,8 @@ def _random_constructor(loader, node):
 def _limit_chars(_string, length):
     length = int(length)
     if length < 0:
-        raise AttributeError(
-            'length to crop should be int, not ' + str(length))
+        raise exceptions.IRException('length to crop should be int, not ' +
+                                     str(length))
 
     return _string[:length]
 
@@ -48,9 +49,11 @@ def _limit_chars_constructor(loader, node):
         !limit_chars [<string>, <length>]
     Method returns first param cropped to <length> chars.
     """
+
     params = loader.construct_sequence(node)
     if len(params) != 2:
-        raise AttributeError('limit_chars requires two params: string length')
+        raise exceptions.IRException(
+            'limit_chars requires two params: string length')
     return _limit_chars(params[0], params[1])
 
 
@@ -65,18 +68,15 @@ def _env_constructor(loader, node):
     default may be specified by passing a second parameter in a list
     length is maximum length of output (croped to that length)
     """
+
     import os
-    # scalar node or string has no defaults, raise KeyError
-    # if absent
+    # scalar node or string has no defaults,
+    # raise IRUndefinedEnvironmentVariableExcption if absent
     if isinstance(node, yaml.nodes.ScalarNode):
         try:
             return os.environ[loader.construct_scalar(node)]
         except KeyError:
-            import main
-
-            logger.error("No environment variable named \"%s\" and default"
-                         "isn't defined" % node.value)
-            sys.exit(1)
+            raise exceptions.IRUndefinedEnvironmentVariableExcption(node.value)
 
     seq = loader.construct_sequence(node)
     var = seq[0]
