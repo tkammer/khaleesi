@@ -184,7 +184,7 @@ def _parse_output(module, stdout):
         repodir=repodir,
         files=list(filenames),
         releases=installed_releases,
-        stdout=stdout.splitlines()
+        stdout=stdout
     )
 
 
