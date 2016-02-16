@@ -1,7 +1,6 @@
 from argparse import ArgumentParser, RawTextHelpFormatter
 
-from execute.core import *
-from execute.execute import *
+from kcli import conf, execute, utils
 
 
 def create_parser(options_trees):
@@ -17,13 +16,14 @@ def create_parser(options_trees):
 
     execute_parser = sub_parsers.add_parser('execute')
     execute_parser.add_argument('-i', '--inventory', default=None,
-                                type=lambda x: core.file_exists(
-                                    execute_parser, x),
+                                type=lambda file_path: utils.normalize_file(
+                                    file_path),
                                 help="Inventory file to use. "
                                      "Default: {lcl}. "
                                      "NOTE: to reuse old environment use {"
                                      "host}".
-                                format(lcl=LOCAL_HOSTS, host=HOSTS_FILE))
+                                format(lcl=execute.LOCAL_HOSTS,
+                                       host=execute.HOSTS_FILE))
     execute_parser.add_argument("-v", "--verbose", help="verbosity",
                                 action='count', default=0)
     execute_parser.add_argument("--provision", action="store_true",
@@ -37,10 +37,11 @@ def create_parser(options_trees):
     execute_parser.add_argument("--cleanup", action="store_true",
                                 help="cleanup nodes")
     execute_parser.add_argument("--settings",
-                                type=lambda x: file_exists(parser, x),
+                                type=lambda file_path: utils.normalize_file(
+                                    file_path),
                                 help="settings file to use. default: %s"
                                      % conf.KCLI_SETTINGS_YML)
-    execute_parser.set_defaults(func=ansible_wrapper)
+    execute_parser.set_defaults(func=execute.ansible_wrapper)
     execute_parser.set_defaults(which='execute')
 
     for options_tree in options_trees:

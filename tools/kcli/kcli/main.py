@@ -8,7 +8,7 @@ from kcli import logger
 
 from kcli import conf
 from kcli import options as kcli_options
-from kcli.execute.execute import PLAYBOOKS
+from kcli.execute import PLAYBOOKS
 from kcli import parse
 from kcli import utils
 
