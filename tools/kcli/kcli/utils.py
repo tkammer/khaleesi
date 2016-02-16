@@ -3,9 +3,7 @@ This module provide some general helper methods
 """
 
 import os
-import logging
 import re
-import sys
 
 import configure
 import yaml
@@ -74,7 +72,11 @@ def update_settings(settings, file_path):
     if not os.path.exists(file_path):
         raise exceptions.IRFileNotFoundException(file_path)
 
-    loaded_file = configure.Configuration.from_file(file_path).configure()
+    try:
+        loaded_file = configure.Configuration.from_file(file_path).configure()
+    except yaml.constructor.ConstructorError as e:
+        raise exceptions.IRYAMLConstructorError(e, file_path)
+
     settings = settings.merge(loaded_file)
 
     return settings
