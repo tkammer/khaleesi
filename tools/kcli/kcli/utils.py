@@ -18,47 +18,6 @@ from kcli import logger
 LOG = logger.LOG
 
 
-# TODO: check if can be moved into Lookup
-def dict_lookup(dic, key, *keys):
-    """lookup and return value of a nested key from a given dictionary
-
-    to get the value of a nested key, all ancestor keys should be given as
-    method's arguments
-
-    example:
-      dict_lookup({'key1': {'key2': 'val'}}, 'key1.key2'.split('.'))
-
-    :param dic: dictionary object to get the key's value from
-    :param key: key / first key in a keys' chain
-    :param keys: sub keys in a keys' chain
-    :return: value of a gives keys
-    """
-    if LOG.getEffectiveLevel() <= logging.DEBUG:
-        calling_method_name = sys._getframe().f_back.f_code.co_name
-        current_method_name = sys._getframe().f_code.co_name
-        if current_method_name != calling_method_name:
-            full_key = list(keys)
-            full_key.insert(0, key)
-            LOG.debug("looking up the value of \"%s\"" % ".".join(full_key))
-
-    if key not in dic:
-        if isinstance(key, str) and key.isdigit():
-            key = int(key)
-        elif isinstance(key, int):
-            key = str(key)
-
-    if keys:
-        return dict_lookup(dic.get(key, {}), *keys)
-
-    try:
-        value = dic[key]
-    except KeyError:
-        raise exceptions.IRKeyNotFoundException(key, dic)
-
-    LOG.debug("value has been found: \"%s\"" % value)
-    return value
-
-
 def dict_insert(dic, val, key, *keys):
     """insert a value of a nested key into a dictionary
 
@@ -66,7 +25,7 @@ def dict_insert(dic, val, key, *keys):
     method's arguments
 
     example:
-      dict_lookup({}, 'val', 'key1.key2'.split('.'))
+      dict_insert({}, 'val', 'key1.key2'.split('.'))
 
     :param dic: a dictionary object to insert the nested key value into
     :param val: a value to insert to the given dictionary
