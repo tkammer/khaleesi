@@ -22,14 +22,14 @@ try:
 except ImportError:
     import json
 
-from ansible.plugins.callback import Callbackbase
+from ansible.plugins.callback import CallbackBase
 
 # Fields to reformat output for
 FIELDS = ['cmd', 'command', 'start', 'end', 'delta', 'msg', 'stdout',
           'stderr', 'results']
 
 
-class CallbackModule(Callbackbase):
+class CallbackModule(CallbackBase):
     def human_log(self, data):
         if type(data) == dict:
             for field in FIELDS:

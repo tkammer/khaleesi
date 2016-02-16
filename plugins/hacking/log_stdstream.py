@@ -6,7 +6,7 @@ import json
 import codecs
 import locale
 
-from ansible.plugins.callback import Callbackbase
+from ansible.plugins.callback import CallbackBase
 
 
 TIME_FORMAT = "%b %d %Y %H:%M:%S"
@@ -58,7 +58,7 @@ def log(host, category, data):
             fd.write(RESULTS_END)
 
 
-class CallbackModule(Callbackbase):
+class CallbackModule(CallbackBase):
     """
     logs playbook results, per host, in /tmp/ansible/stdstream_logs
     """
