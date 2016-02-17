@@ -2,13 +2,14 @@
 This module contains the tools for handling YAML files and tags.
 """
 
+import logging
 import re
+import sys
 import string
 
 import configure
 import yaml
 
-import kcli.utils
 from kcli import exceptions
 from kcli import logger
 
@@ -141,8 +142,7 @@ class Lookup(yaml.YAMLObject):
             for a_lookup in lookups:
                 lookup_key = re.search('(\w+\.?)+ *?\}\}', a_lookup)
                 lookup_key = lookup_key.group(0).strip()[:-2].strip()
-                lookup_value = kcli.utils.dict_lookup(
-                    self.settings, *lookup_key.split("."))
+                lookup_value = self.dict_lookup(lookup_key.split("."))
 
                 if isinstance(lookup_value, Lookup):
                     return
@@ -151,6 +151,55 @@ class Lookup(yaml.YAMLObject):
 
                 self.key = re.sub('\{\{\s*\!lookup\s*[\w.]*\s*\}\}',
                                   lookup_value, self.key, count=1)
+
+    def dict_lookup(self, keys, dic=None):
+        """ Returns the value of a given key from the settings class variable
+
+        to get the value of a nested key, all ancestor keys should be given as
+        method's arguments
+
+        example:
+          if one want to get the value of 'key3' in:
+            {'key1': {'key2': {'key3': 'val1'}}}
+
+          dict_lookup(['key1', 'key2', 'key3'])
+        return value:
+          'val1'
+
+        :param keys: list with keys describing the path to the target key
+        :param dic: mapping object holds settings. (self.settings by default)
+
+        :return: value of the target key
+        """
+        if LOG.getEffectiveLevel() <= logging.DEBUG:
+            calling_method_name = sys._getframe().f_back.f_code.co_name
+            current_method_name = sys._getframe().f_code.co_name
+            if current_method_name != calling_method_name:
+                LOG.debug(
+                    'looking up the value of "{keys}"'.format(
+                        keys=".".join(keys)))
+
+        if dic is None:
+            dic = self.settings
+
+        key = keys.pop(0)
+
+        if key not in dic:
+            if isinstance(key, str) and key.isdigit():
+                key = int(key)
+            elif isinstance(key, int):
+                key = str(key)
+
+        try:
+            if keys:
+                return self.dict_lookup(keys, dic[key])
+
+            value = dic[key]
+        except KeyError:
+            raise exceptions.IRKeyNotFoundException(key, dic)
+
+        LOG.debug('value has been found: "{value}"'.format(value=value))
+        return value
 
     @classmethod
     def from_yaml(cls, loader, node):
