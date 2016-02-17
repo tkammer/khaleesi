@@ -1,3 +1,5 @@
+import argparse
+import sys
 from os import path
 
 import ansible.color
@@ -6,13 +8,16 @@ import ansible.playbook
 import ansible.utils
 from ansible import callbacks
 
-from kcli import conf, exceptions
-from kcli.execute import core
+from kcli import conf, exceptions, utils
 
+VERBOSITY = 0
 HOSTS_FILE = "hosts"
 LOCAL_HOSTS = "local_hosts"
 PROVISION = "provision"
 PLAYBOOKS = [PROVISION, "install", "test", "collect-logs", "cleanup"]
+
+assert "playbooks" == path.basename(conf.PLAYBOOKS_DIR), \
+    "Bad path to playbooks"
 
 
 # ansible-playbook
@@ -139,7 +144,7 @@ def ansible_wrapper(args):
 
     playbooks = [p for p in PLAYBOOKS if getattr(args, p, False)]
     if not playbooks:
-        core.parser.error("No playbook to execute (%s)" % PLAYBOOKS)
+        parser.error("No playbook to execute (%s)" % PLAYBOOKS)
 
     for playbook in (p for p in PLAYBOOKS if getattr(args, p, False)):
         print "Executing Playbook: %s" % playbook
@@ -147,3 +152,23 @@ def ansible_wrapper(args):
             execute_ansible(playbook, args)
         except Exception:
             raise exceptions.IRPlaybookFailedException(playbook)
+
+
+def main():
+    args = parser.parse_args()
+    args.func(args)
+
+
+parser = argparse.ArgumentParser()
+parser.add_argument('-v', '--verbose', default=VERBOSITY, action="count",
+                    help="verbose mode (-vvv for more,"
+                         " -vvvv to enable connection debugging)")
+parser.add_argument("--settings",
+                    default=conf.KCLI_SETTINGS_YML,
+                    type=lambda file_path: utils.normalize_file(file_path),
+                    help="settings file to use. default: %s"
+                         % conf.KCLI_SETTINGS_YML)
+subparsers = parser.add_subparsers(metavar="COMMAND")
+
+if __name__ == '__main__':
+    sys.exit(main())
