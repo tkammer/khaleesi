@@ -2,7 +2,7 @@
 - name: Ensure baremetal host has no yum repos installed
   hosts: undercloud
   vars:
-      - ansible_ssh_user: root
+      - ansible_user: root
   tasks:
       - name: clean release rpms
         yum: name={{ item }} state=absent
@@ -22,7 +22,7 @@
 - name: Update packages on the host
   hosts: undercloud
   vars:
-      - ansible_ssh_user: root
+      - ansible_user: root
   tasks:
       - name: repolist
         command: yum -d 7 repolist
@@ -33,7 +33,7 @@
 - name: Enable ip forwarding
   hosts: undercloud
   vars:
-      - ansible_ssh_user: root
+      - ansible_user: root
   tasks:
       - name: enabling ip forwarding
         sysctl: name="net.ipv4.ip_forward" value=1 sysctl_set=yes reload=yes

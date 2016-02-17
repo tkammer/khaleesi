@@ -1,7 +1,7 @@
 - name: Copy the gating package
   hosts: virthost
   vars:
-      - ansible_ssh_user: root
+      - ansible_user: root
   tasks:
       - name: make temp directory
         command: mktemp -d

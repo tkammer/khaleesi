@@ -40,12 +40,12 @@
       - name: Clone opendayligt dist-git
         git: repo='{{ odl.dist_git.url }}'
              version='{{ odl.dist_git.branch }}'
-             dest='/home/{{ ansible_ssh_user}}/opendaylight'
+             dest='/home/{{ ansible_user}}/opendaylight'
              accept_hostkey=true
 
       - name: Clone maven-chain-builder
         git: repo=https://github.com/bregman-arie/maven-chain-builder.git
-             dest='/home/{{ ansible_ssh_user }}/maven-chain-builder'
+             dest='/home/{{ ansible_user }}/maven-chain-builder'
              accept_hostkey=true
 
       - name: Install PME
@@ -57,23 +57,23 @@
   tasks:
       - name: Prepare chain file
         args:
-            chdir: /home/{{ ansible_ssh_user}}/maven-chain-builder
+            chdir: /home/{{ ansible_user}}/maven-chain-builder
         shell: >
-            sudo sed -i "s/\$TAG_TO_BUILD/rhos-{{ product.full_version }}-patches/g" /home/{{ ansible_ssh_user }}/opendaylight/make-vars;
-            /home/{{ ansible_ssh_user }}/opendaylight/make-vars;
-            cp /home/{{ ansible_ssh_user}}/opendaylight/opendaylight-chain/opendaylight-chain.ini .;
-            cd /home/{{ ansible_ssh_user }}/opendaylight && git checkout -- make-vars && git checkout -- opendaylight-chain/opendaylight-chain.ini && cd -;
-            redhat_version=`cat /home/{{ ansible_ssh_user }}/opendaylight/*/*.ini | grep "redhat_version = " | cut -d= -f2 | xargs`;
+            sudo sed -i "s/\$TAG_TO_BUILD/rhos-{{ product.full_version }}-patches/g" /home/{{ ansible_user }}/opendaylight/make-vars;
+            /home/{{ ansible_user }}/opendaylight/make-vars;
+            cp /home/{{ ansible_user}}/opendaylight/opendaylight-chain/opendaylight-chain.ini .;
+            cd /home/{{ ansible_user }}/opendaylight && git checkout -- make-vars && git checkout -- opendaylight-chain/opendaylight-chain.ini && cd -;
+            redhat_version=`cat /home/{{ ansible_user }}/opendaylight/*/*.ini | grep "redhat_version = " | cut -d= -f2 | xargs`;
             sed -i "s/\%(redhat_version)s/$redhat_version/g" *.ini;
-            bomver=`cat /home/{{ ansible_ssh_user }}/opendaylight/*/*.ini | grep "bomversion = " | cut -d= -f2 | xargs`;
+            bomver=`cat /home/{{ ansible_user }}/opendaylight/*/*.ini | grep "bomversion = " | cut -d= -f2 | xargs`;
             sed -i "s/\%\(bomversion\)s/$bomver/g" *.ini;
             sed -i "s/skipTests/skipTests=true/g" *.ini;
             sed -i "s/properties = /\n/g" *.ini
 
       - name: Run apache-chain-builder and build the opendaylight disturbution
         args:
-            chdir: /home/{{ ansible_ssh_user}}/maven-chain-builder
-        shell: "python maven-chain-builder.py opendaylight-chain.ini {{ ansible_ssh_user }}"
+            chdir: /home/{{ ansible_user}}/maven-chain-builder
+        shell: "python maven-chain-builder.py opendaylight-chain.ini {{ ansible_user }}"
 
 - name: Prepare opendaylight distribution for run
   hosts: odl_controller

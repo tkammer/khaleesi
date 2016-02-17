@@ -1,10 +1,10 @@
 ---
-- include: "{{ base_dir }}/khaleesi/playbooks/group_by.yml ansible_ssh_user=root"
+- include: "{{ base_dir }}/khaleesi/playbooks/group_by.yml ansible_user=root"
 
 - name: RHEL RDO prep
   hosts: "{{ repo_host }}:&RedHat"
   vars:
-      - ansible_ssh_user: root
+      - ansible_user: root
   roles:
       # enable this role when rdo and rhos officially diverge
       #- { role: linux/rhel/rdo }
@@ -13,7 +13,7 @@
 - name: CentOS RDO prep
   hosts: "{{ repo_host }}:&CentOS"
   vars:
-      - ansible_ssh_user: root
+      - ansible_user: root
   roles:
       - { role: linux/centos }
       - { role: product/rdo/rhel }
@@ -21,14 +21,14 @@
 - name: Linux common prep (Collect performance data, etc.)
   hosts: "{{ repo_host }}"
   vars:
-      - ansible_ssh_user: root
+      - ansible_user: root
   roles:
      - { role: linux-common }
 
 - name: Enable EPEL
   hosts: "{{ repo_host }}"
   vars:
-      - ansible_ssh_user: root
+      - ansible_user: root
   tasks:
       - name: Install epel release
         command: "yum localinstall -y {{ distro.epel_release }}"
@@ -36,7 +36,7 @@
 - name: Add the RDO release repos
   hosts: "{{ repo_host }}"
   vars:
-      - ansible_ssh_user: root
+      - ansible_user: root
   tasks:
     - name: Install rdo-release rpm
       yum:
@@ -47,7 +47,7 @@
 - name: Update packages on the host
   hosts: "{{ repo_host }}"
   vars:
-      - ansible_ssh_user: root
+      - ansible_user: root
   tasks:
       - name: repolist
         command: yum -d 7 repolist
@@ -67,7 +67,7 @@
         local_action:
             wait_for_ssh
               reboot_first=true
-              host="{{ ansible_ssh_host }}"
+              host="{{ ansible_host }}"
               user="root"
               ssh_opts="-F {{ base_dir }}/khaleesi/ssh.config.ansible"
               key="{{ ansible_ssh_private_key_file }}"

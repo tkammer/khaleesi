@@ -3,7 +3,7 @@
 - name: clean up rdo-manager virthost
   hosts: virthost
   vars:
-      - ansible_ssh_user: root
+      - ansible_user: root
   roles:
       - { role: cleanup_nodes/rdo-manager,
           when: (installer.type == "rdo-manager" and provisioner.type == "manual")

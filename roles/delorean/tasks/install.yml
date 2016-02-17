@@ -8,7 +8,7 @@
 
 - name: Add user to mock group
   sudo: yes
-  user: name={{ ansible_ssh_user }} groups=mock
+  user: name={{ ansible_user }} groups=mock
 
 - name: Create virtualenv for Delorean
   command: virtualenv {{ ansible_env.HOME }}/delorean-venv creates='{{ ansible_env.HOME }}/delorean-venv'

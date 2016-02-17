@@ -2,7 +2,7 @@
 - name: Create the stack user
   hosts: "{{ host }}"
   vars:
-      - ansible_ssh_user: root
+      - ansible_user: root
   tasks:
       - name: create user
         user: name="{{ provisioner.remote_user }}" state=present password=stack

@@ -19,7 +19,6 @@
   hosts: net_prov
   gather_facts: no
   tasks:
-    - debug: var="{{ provisioner.network.network_list }}"
     - name: Create networks
       os_network:
           state: present
