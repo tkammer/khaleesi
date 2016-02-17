@@ -3,7 +3,6 @@ This module provide some general helper methods
 """
 
 import os
-import re
 
 import configure
 import yaml
@@ -83,7 +82,7 @@ def update_settings(settings, file_path):
 
 
 def generate_settings(settings_files, extra_vars):
-    """Generate one settings object (configure.Configuration) by merging all
+    """ Generates one settings object (configure.Configuration) by merging all
     files in settings file & extra-vars
 
     files in 'settings_files' are the first to be merged and after them the
@@ -110,38 +109,7 @@ def generate_settings(settings_files, extra_vars):
             key, value = extra_var.split("=")
             dict_insert(settings, value, *key.split("."))
 
-    # Dump & load again settings, because 'in_string_lookup' can't work with
-    # 'Configuration' object.
-    dumped_settings = yaml.safe_dump(settings, default_flow_style=False)
-    settings = yaml.safe_load(dumped_settings)
-
     return settings
-
-
-def in_string_lookup(settings):
-    """convert strings contain the '!lookup' tag in them and don't
-    already converted into Lookup objects.
-    (in case of strings that contain and don't start with '!lookup')
-
-    :param settings: a settings dictionary to search and convert lookup from
-    """
-    if kcli.yamls.Lookup.settings is None:
-        kcli.yamls.Lookup.settings = settings
-
-    my_iter = settings.iteritems() if isinstance(settings, dict) \
-        else enumerate(settings)
-
-    for idx_key, value in my_iter:
-        if isinstance(value, dict):
-            in_string_lookup(settings[idx_key])
-        elif isinstance(value, list):
-            in_string_lookup(value)
-        elif isinstance(value, str):
-            parser = re.compile('\{\{\s*\!lookup\s*[\w.]*\s*\}\}')
-            lookups = parser.findall(value)
-
-            if lookups:
-                settings[idx_key] = kcli.yamls.Lookup(value)
 
 
 # todo: convert into a file object to be consumed by argparse
@@ -164,33 +132,3 @@ def normalize_file(file_path):
         raise exceptions.IRFileNotFoundException(file_path)
 
     return file_path
-
-
-# todo: move into lookup
-def lookup2lookup(settings):
-    """handles recursive lookups
-
-    load and dump yaml's dictionary ('settings') until all lookups strings
-    are been converted into Lookup objects
-
-    :param settings: settings to convert all lookups from
-    :return: an yml dictionary object without lookup strings
-    """
-
-    first_dump = True
-    while True:
-        if not first_dump:
-            kcli.yamls.Lookup.settings = settings
-            settings = yaml.load(output)
-
-        in_string_lookup(settings)
-        output = yaml.safe_dump(settings, default_flow_style=False)
-
-        if first_dump:
-            first_dump = False
-            continue
-
-        if not cmp(settings, kcli.yamls.Lookup.settings):
-            break
-
-    return output
