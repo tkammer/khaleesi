@@ -52,11 +52,14 @@ def create_parser(options_trees):
         sub_parser.add_argument("-d", "--dry-run", action='store_true',
                                 help="skip playbook execution stage")
         sub_parser.add_argument("-e", "--extra-vars", default=list(),
-                                action='append', help="Provide extra vars")
+                                action='append', help="Provide extra vars. "
+                                                      "(key=value, or a path "
+                                                      "to settings file if "
+                                                      "starts with '@')")
         sub_parser.add_argument("-n", "--input", action='append',
-                                help="a settings file that will be loaded "
-                                     "first, all other settings file will be"
-                                     " merged with it", default=list())
+                                help="Settings files to be loaded first,"
+                                     " other settings files will be"
+                                     " merged with them", default=list())
         sub_parser.add_argument("-o", "--output-file",
                                 help="file to dump the settings into")
         sub_parser.add_argument("-v", "--verbose", help="verbosity",
