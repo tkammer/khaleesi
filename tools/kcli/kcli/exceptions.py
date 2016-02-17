@@ -38,3 +38,13 @@ class IRPlaybookFailedException(IRException):
     def __init__(self, playbook):
         super(self.__class__, self).__init__(
             'Playbook "%s" failed!' % playbook)
+
+
+class IRYAMLConstructorError(IRException):
+    def __init__(self, mark_obj, where):
+        self.message = mark_obj.problem
+        pm = mark_obj.problem_mark
+        self.message += ' in:\n  "{where}", line {line_no}, column ' \
+                        '{column_no}'.format(where=where,
+                                             line_no=pm.line + 1,
+                                             column_no=pm.column + 1)

@@ -54,4 +54,25 @@ This displays options you can pass to ``kcli``.
 
   $ export WORKSAPCE=$(dirname `pwd`)
 
+Extra-Vars
+----------
+One can set/overwrite settings in the output file using the '-e/--extra-vars'
+option. There are 2 ways of doing so:
 
+1. specific settings: (key=value form)
+    --extra-vars provisioner.site.user=a_user
+2. path to a settings file: (starts with '@')
+    --extra-vars @path/to/a/settings_file.yml
+
+The '-e/--extra-vars' can be used more than once.
+
+Merging order
+-------------
+Except options based on the settings dir structure, kcli accepts input of
+predefined settings files (with -n/--input) and user defined specific options
+(-e/--extra-vars).
+The merging priority order listed below:
+
+1. Input files
+2. Settings dir based options
+3. Extra Vars
