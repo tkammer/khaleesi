@@ -9,7 +9,6 @@ installer:
         - overcloud-full
     '8-director':
       files:
-        - deploy-ramdisk-ironic
         - ironic-python-agent
         - overcloud-full
     url:
@@ -21,6 +20,7 @@ installer:
           ga:
             '7.0': !lookup private.installer.images.rhos.7_director.GA.7.0
             '7.1': !lookup private.installer.images.rhos.7_director.GA.7.1
+            '7.2': !lookup private.installer.images.rhos.7_director.GA.7.2
         '8-director':
           latest:
             '8.0': !lookup private.installer.images.rhos.8_director.latest.8.0

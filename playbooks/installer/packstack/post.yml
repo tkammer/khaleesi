@@ -115,6 +115,54 @@
     - name: Restart neutron service to apply changes in floating ip pool
       shell: openstack-service restart neutron
 
+- name: Check if RHBZ1299563 ceilometer nova notifications are enabled
+  hosts: compute
+  gather_facts: no
+  sudo: yes
+  tasks:
+      - name: Check if openstack-ceilometer-compute service exists
+        shell: systemctl is-active openstack-ceilometer-compute
+        register: ceilometer_status
+        ignore_errors: yes
+
+      - group_by: key=workaround_rhbz1299563
+        when: workarounds.rhbz1299563 is defined and ceilometer_status.stdout == 'active'
+
+- name: "Workaround RHBZ1299563: Configure ceilometer nova notifications"
+  hosts: workaround_rhbz1299563
+  gather_facts: no
+  sudo: yes
+  tasks:
+    - name: Set instace_usage_audit in nova.conf
+      ini_file: dest=/etc/nova/nova.conf
+               section=DEFAULT
+               option=instance_usage_audit
+               value=True
+
+    - name: Set instace_usage_audit_period in nova.conf
+      ini_file: dest=/etc/nova/nova.conf
+                section=DEFAULT
+                option=instance_usage_audit_period
+                value=hour
+
+    - name: Set notify_on_state_change in nova.conf
+      ini_file: dest=/etc/nova/nova.conf
+                section=DEFAULT
+                option=notify_on_state_change
+                value=vm_and_task_state
+
+    - name: Set notification_driver in nova.conf
+      ini_file: dest=/etc/nova/nova.conf
+                section=DEFAULT
+                option=notification_driver
+                value=messagingv2
+
+    - name: Restart openstack-ceilometer-compute
+      service: name=openstack-ceilometer-compute state=restarted
+
+    - name: Restart nova-compute
+      service: name=openstack-nova-compute state=restarted
+
 - name:  Post install for Neutron server
   hosts: controller
   gather_facts: no
@@ -143,3 +191,42 @@
         name: neutron-server
         state: restarted
       when: ha|changed or portsec|changed
+
+- name: Packstack post install
+  hosts: controller
+  gather_facts: yes
+  tasks:
+        # TODO(tkammer): move all params into khaleesi-settings
+      - name: Create external network - neutron
+        quantum_network:
+            state: present
+            auth_url: "http://{{ hostvars[inventory_hostname].ansible_default_ipv4.address }}:35357/v2.0/"
+            login_username: admin
+            login_password: "{{ hostvars[inventory_hostname].admin_password | default('redhat') }}"
+            login_tenant_name: admin
+            name: "{{ installer.network.name }}"
+            provider_network_type: "{{ installer.network.external.provider_network_type }}"
+            provider_physical_network: "{{ installer.network.label }}"
+            provider_segmentation_id: "{{ installer.network.external.vlan.tag|default(omit) }}"
+            router_external: yes
+            shared: no
+            admin_state_up: yes
+        when: installer is defined and installer.network.type == 'neutron'
+
+      - name: Create subnet for external network - neutron
+        quantum_subnet:
+            state: present
+            auth_url: "http://{{ hostvars[inventory_hostname].ansible_default_ipv4.address }}:35357/v2.0/"
+            login_username: admin
+            login_password: "{{ hostvars[inventory_hostname].admin_password | default('redhat') }}"
+            login_tenant_name: admin
+            tenant_name: admin
+            network_name: "{{ installer.network.name }}"
+            name: external-subnet
+            enable_dhcp: False
+            gateway_ip: "{{ provisioner.network.network_list.external.nested.subnet_gateway }}"
+            cidr: "{{ provisioner.network.network_list.external.nested.subnet_cidr}}"
+            allocation_pool_start: "{{ provisioner.network.network_list.external.nested.allocation_pool_start }}"
+            allocation_pool_end: "{{ provisioner.network.network_list.external.nested.allocation_pool_end }}"
+        when: installer is defined and installer.network.type == 'neutron'
+

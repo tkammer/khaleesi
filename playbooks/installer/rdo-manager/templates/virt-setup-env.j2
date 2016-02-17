@@ -39,8 +39,16 @@ export NODE_MEM={{ installer.nodes.node_mem | default('4096') }}
 export NODE_CPU={{ installer.nodes.node_cpu | default('1') }}
 {%endif %}
 
+{% if installer.nodes.node_disk is defined %}
+export NODE_DISK={{ installer.nodes.node_disk | default('50') }}
+{%endif %}
+
 {% if installer.nodes.undercloud_node_mem is defined %}
 export UNDERCLOUD_NODE_MEM={{ installer.nodes.undercloud_node_mem | default('4096') }}
+{%endif %}
+
+{% if installer.nodes.undercloud_node_cpu is defined %}
+export UNDERCLOUD_NODE_CPU={{ installer.nodes.undercloud_node_cpu | default('1') }}
 {%endif %}
 
 {% if product.full_version == "7-director" and installer.network.isolation != "none" %}
@@ -49,4 +57,8 @@ export TESTENV_ARGS=" --baremetal-bridge-names 'brbm' --vlan-trunk-ids='10 20 30
 
 {% if product.full_version != "7-director" and installer.network.isolation != "none" %}
 export TESTENV_ARGS=" --baremetal-bridge-names 'brbm' "
+{%endif %}
+
+{% if installer.proxy != 'none' %}
+export http_proxy={{ installer.http_proxy_url }}
 {%endif %}

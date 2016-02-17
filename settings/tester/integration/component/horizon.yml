@@ -41,7 +41,6 @@ tester:
   - python-virtualenv
   - firefox
   - unzip
-  - git
   - python-keystoneclient
   - xorg-x11-server-Xvfb
   - xorg-x11-font*
@@ -56,3 +55,8 @@ tester:
   - selenium==2.45.0
   - nose
   - testtools
+  accounts:
+    - username: 'demo'
+      tenant_name: 'demo'
+      password: 'redhat'
+      roles: []

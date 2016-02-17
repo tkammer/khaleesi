@@ -1,3 +1,0 @@
----
-- include: "{{base_dir}}/khaleesi/playbooks/provisioner/manual/main.yml"
-- include: undercloud/main.yml

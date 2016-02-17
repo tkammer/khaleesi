@@ -27,7 +27,7 @@
   hosts: update:!undercloud
   tasks:
     - name: dump package list
-      shell: rpm -qa &> {{ ansible_ssh_host }}-rpm.log
+      shell: rpm -qa &> {{ ansible_host }}-rpm.log
 
     - name: copy 55-heat-config file to node BZ 1278181
       sudo: yes
@@ -121,15 +121,15 @@
   hosts: update:!undercloud
   tasks:
     - name: dump package list
-      shell: rpm -qa &> {{ ansible_ssh_host }}-rpm-updated.log
+      shell: rpm -qa &> {{ ansible_host }}-rpm-updated.log
 
     - name: get rpm list stat
       register: rpm_list_result
-      stat: path=~/{{ ansible_ssh_host }}-rpm.log
+      stat: path=~/{{ ansible_host }}-rpm.log
 
     - name: get rpm updated stat
       register: rpm_list_updated_result
-      stat: path=~/{{ ansible_ssh_host }}-rpm-updated.log
+      stat: path=~/{{ ansible_host }}-rpm-updated.log
 
     - name: fail when rpm list checksum are equal
       fail: msg="Failed, no package has been updated..."

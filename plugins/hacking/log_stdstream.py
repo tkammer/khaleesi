@@ -6,6 +6,12 @@ import json
 import codecs
 import locale
 
+try:
+    from ansible.plugins.callback import CallbackBase
+    ANSIBLE2 = True
+except ImportError:
+    ANSIBLE2 = False
+
 TIME_FORMAT = "%b %d %Y %H:%M:%S"
 MARK_FORMAT = "%(now)s ======== MARK ========\n"
 MSG_FORMAT = "%(now)s - %(category)s - %(data)s\n\n"
@@ -55,7 +61,7 @@ def log(host, category, data):
             fd.write(RESULTS_END)
 
 
-class CallbackModule(object):
+class CallbackModule(CallbackBase if ANSIBLE2 else object):
     """
     logs playbook results, per host, in /tmp/ansible/stdstream_logs
     """

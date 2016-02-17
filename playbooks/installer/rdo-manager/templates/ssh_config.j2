@@ -1,13 +1,13 @@
 {% if groups["virthost"] is defined %}
 Host undercloud-root
-    ProxyCommand ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o ConnectTimeout=60 -i {{ hostvars[groups['virthost'][0]].ansible_ssh_private_key_file }} stack@{{ hostvars[groups['virthost'][0]].ansible_ssh_host }} -W {{ hostvars['localhost'].undercloud_ip }}:22
+    ProxyCommand ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o ConnectTimeout=60 -i {{ hostvars[groups['virthost'][0]].ansible_ssh_private_key_file }} stack@{{ hostvars[groups['virthost'][0]].ansible_host }} -W {{ hostvars['localhost'].undercloud_ip }}:22
     IdentityFile id_rsa_virt_host
     User root
     StrictHostKeyChecking no
     UserKnownHostsFile=/dev/null
 
 Host undercloud
-    ProxyCommand ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o ConnectTimeout=60 -i {{ hostvars[groups['virthost'][0]].ansible_ssh_private_key_file }} stack@{{ hostvars[groups['virthost'][0]].ansible_ssh_host }} -W {{ hostvars['localhost'].undercloud_ip }}:22
+    ProxyCommand ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o ConnectTimeout=60 -i {{ hostvars[groups['virthost'][0]].ansible_ssh_private_key_file }} stack@{{ hostvars[groups['virthost'][0]].ansible_host }} -W {{ hostvars['localhost'].undercloud_ip }}:22
     IdentityFile id_rsa_virt_host
     User stack
     StrictHostKeyChecking no
@@ -19,11 +19,18 @@ Host undercloud-from-virthost
     IdentitiesOnly yes
     User root
     StrictHostKeyChecking no
+
+Host undercloud-from-virthost-as-stack
+    Hostname {{ hostvars['localhost'].undercloud_ip }}
+    IdentityFile ~/.ssh/id_rsa
+    IdentitiesOnly yes
+    User stack
+    StrictHostKeyChecking no
 {%endif %}
 
 {% if groups["virthost"] is not defined and hw_env is defined and hw_env.env_type != "ovb_host_cloud" %}
-Host {{ hostvars[groups['undercloud'][0]].ansible_ssh_host }}
-    Hostname {{ hostvars[groups['undercloud'][0]].ansible_ssh_host }}
+Host {{ hostvars[groups['undercloud'][0]].ansible_host }}
+    Hostname {{ hostvars[groups['undercloud'][0]].ansible_host }}
     IdentityFile ~/.ssh/id_rsa
     IdentitiesOnly yes
     User root
@@ -32,14 +39,14 @@ Host {{ hostvars[groups['undercloud'][0]].ansible_ssh_host }}
 
 {% if groups["virthost"] is not defined and hw_env is defined and hw_env.env_type == "ovb_host_cloud" %}
 Host undercloud-root
-    ProxyCommand ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o ConnectTimeout=60 -i {{ hostvars[groups['provisioned'][0]].ansible_ssh_private_key_file }} stack@{{ hostvars[groups['provisioned'][0]].ansible_ssh_host }} -W {{ floating_ip }}:22
+    ProxyCommand ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o ConnectTimeout=60 -i {{ hostvars[groups['provisioned'][0]].ansible_ssh_private_key_file }} stack@{{ hostvars[groups['provisioned'][0]].ansible_host }} -W {{ floating_ip }}:22
     IdentityFile {{ base_dir }}/khaleesi/id_rsa_undercloud_instance
     User root
     StrictHostKeyChecking no
     UserKnownHostsFile=/dev/null
 
 Host undercloud
-    ProxyCommand ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o ConnectTimeout=60 -i {{ hostvars[groups['provisioned'][0]].ansible_ssh_private_key_file }} stack@{{ hostvars[groups['provisioned'][0]].ansible_ssh_host }} -W {{ floating_ip }}:22
+    ProxyCommand ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o ConnectTimeout=60 -i {{ hostvars[groups['provisioned'][0]].ansible_ssh_private_key_file }} stack@{{ hostvars[groups['provisioned'][0]].ansible_host }} -W {{ floating_ip }}:22
     IdentityFile {{ base_dir }}/khaleesi/id_rsa_undercloud_instance
     User stack
     StrictHostKeyChecking no
@@ -56,7 +63,7 @@ Host undercloud-from-baremetal-host
 {% if groups["overcloud"] is defined %}
 {% for host in groups["overcloud"] %}
 Host {{ host }}
-    ProxyCommand ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o ConnectTimeout=60 -i ~/.ssh/id_rsa -F ssh.config.ansible {{ hostvars[groups['undercloud'][0]].ansible_ssh_host }} -W {{ hostvars[host].ansible_fqdn }}:22
+    ProxyCommand ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o ConnectTimeout=60 -i ~/.ssh/id_rsa -F ssh.config.ansible {{ hostvars[groups['undercloud'][0]].ansible_host }} -W {{ hostvars[host].ansible_fqdn }}:22
     IdentityFile id_rsa_undercloud
     IdentitiesOnly yes
     User heat-admin

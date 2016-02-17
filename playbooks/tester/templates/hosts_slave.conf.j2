@@ -1,9 +1,9 @@
 {% for host in groups.openstack_nodes %}
-{{ hostvars[host].ansible_ssh_host }} ansible_ssh_user=fedora
+{{ hostvars[host].ansible_host }} ansible_user=fedora
 {% endfor %}
 
 [slave]
 {% for host in groups.openstack_nodes %}
-{{ hostvars[host].ansible_ssh_host }} ansible_ssh_user=fedora
+{{ hostvars[host].ansible_host }} ansible_user=fedora
 {% endfor %}
 

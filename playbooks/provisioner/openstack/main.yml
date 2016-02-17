@@ -7,74 +7,69 @@
       - group_by: key=net_prov
         when: provisioner.network.dynamic_net is defined and provisioner.network.dynamic_net
 
+- name: Check the nodes which need a floating IP from a specific network
+  hosts: localhost
+  gather_facts: no
+  sudo: no
+  tasks:
+      - group_by: key=net_add_floatingip
+        when: provisioner.network.public_net_name is defined
 
 - name: Create networks
   hosts: net_prov
   gather_facts: no
   tasks:
     - name: Create networks
-      quantum_network:
-          auth_url: "{{ provisioner.auth_url }}"
-          login_username: "{{ provisioner.username }}"
-          login_password: "{{ provisioner.password }}"
-          login_tenant_name: "{{ provisioner.tenant_name }}"
-          name: "{{ item.value.name }}"
+      os_network:
+          state: present
+          auth:
+              auth_url: "{{ provisioner.auth_url }}"
+              username: "{{ provisioner.username }}"
+              password: "{{ provisioner.password }}"
+              project_name: "{{ provisioner.tenant_name }}"
+          name: "{{ item }}"
       register: "networks"
-      with_dict: "{{ provisioner.network.network_list }}"
+      with_items: "{{ provisioner.network.network_list.values()|map(attribute='name')|list }}"
 
 - name: Create subnets
   hosts: net_prov
   gather_facts: no
   tasks:
     - name: Create subnet for each network
-      quantum_subnet:
-          auth_url: "{{ provisioner.auth_url }}"
-          login_username: "{{ provisioner.username }}"
-          login_password: "{{ provisioner.password }}"
-          login_tenant_name: "{{ provisioner.tenant_name }}"
-          name: "{{ item.value.subnet_name }}"
-          cidr: "{{ item.value.cidr }}"
-          network_name: "{{ item.value.name }}"
-          enable_dhcp: "{{ item.value.enable_dhcp | default('True') }}"
-#          dns_nameservers: "{{ item.value.dns_nameservers | join(',') | default('null') }}"
-          dns_nameservers: "{{ item.value.dns_nameservers.first_dns | default(omit) }}"
-          allocation_pool_start: "{{ item.value.allocation_pool_start | default(omit) }}"
-          allocation_pool_end: "{{ item.value.allocation_pool_end | default(omit) }}"
+      os_subnet:
+          auth:
+              auth_url: "{{ provisioner.auth_url }}"
+              username: "{{ provisioner.username }}"
+              password: "{{ provisioner.password }}"
+              project_name: "{{ provisioner.tenant_name }}"
+          name: "{{ item.subnet_name }}"
+          cidr: "{{ item.cidr }}"
+          network_name: "{{ item.name }}"
+          enable_dhcp: "{{ item.enable_dhcp | default('True') }}"
+#          dns_nameservers: "{{ item.dns_nameservers | join(',') | default('null') }}"
+          dns_nameservers: "{{ item.dns_nameservers.values() | default(omit) }}"
+          allocation_pool_start: "{{ item.allocation_pool_start | default(omit) }}"
+          allocation_pool_end: "{{ item.allocation_pool_end | default(omit) }}"
       register: "subnets"
-      with_dict: "{{ provisioner.network.network_list }}"
+      with_items: provisioner.network.network_list.values()
+
 
 - name: Create and configure router
   hosts: net_prov
   tasks:
     - name: Create router
-      quantum_router:
-          auth_url: "{{ provisioner.auth_url }}"
-          login_username: "{{ provisioner.username }}"
-          login_password: "{{ provisioner.password }}"
-          login_tenant_name: "{{ provisioner.tenant_name }}"
+      os_router:
+          auth:
+              auth_url: "{{ provisioner.auth_url }}"
+              username: "{{ provisioner.username }}"
+              password: "{{ provisioner.password }}"
+              project_name: "{{ provisioner.tenant_name }}"
           name: "{{ provisioner.network.router.name }}"
+          network: "{{ provisioner.network.public_net_name }}"
+          interfaces:
+              - "{{ provisioner['network']['network_list']['external']['subnet_name'] }}"
+              - "{{ provisioner['network']['network_list']['management']['subnet_name'] }}"
       register: router
-
-    - name: Attach external interface to the router
-      quantum_router_interface:
-          auth_url: "{{ provisioner.auth_url }}"
-          login_username: "{{ provisioner.username }}"
-          login_password: "{{ provisioner.password }}"
-          login_tenant_name: "{{ provisioner.tenant_name }}"
-          router_name: "{{ provisioner.network.router.name }}"
-          subnet_name: "{{ item }}"
-      with_items:
-          - "{{ provisioner['network']['network_list']['external']['subnet_name'] }}"
-          - "{{ provisioner['network']['network_list']['management']['subnet_name'] }}"
-
-    - name: Set gateway for router
-      quantum_router_gateway:
-          auth_url: "{{ provisioner.auth_url }}"
-          login_username: "{{ provisioner.username }}"
-          login_password: "{{ provisioner.password }}"
-          login_tenant_name: "{{ provisioner.tenant_name }}"
-          network_name: "{{ provisioner.network.public_net_name }}"
-          router_name: "{{ provisioner.network.router.name }}"
 
 - name: Create nodes - OpenStack
   hosts: localhost
@@ -87,25 +82,25 @@
               results: "{{ provisioner.network.network_list.values() }}"
 
     - name: Create nodes
-      nova_compute:
-           auth_url: "{{ provisioner.auth_url }}"
-           state: present
-           login_username: "{{ provisioner.username }}"
-           login_password: "{{ provisioner.password }}"
-           login_tenant_name: "{{ provisioner.tenant_name }}"
-           name: "{{ item.value.name }}"
-           image_id: "{{ item.value.image_id }}"
-           key_name: "{{ provisioner.key_name }}"
-           flavor_id: "{{ item.value.flavor_id }}"
-           nics:
-              - net-id: "{{ networks.results.0.id }}"
-              - net-id: "{{ networks.results.1.id }}"
-              - net-id: "{{ networks.results.2.id }}"
-           config_drive: True
-           auto_floating_ip: "{{ provisioner.network.use_floating_ip | default(omit) }}"
-           wait_for: 800
-             # our library/nova_compute will retry booting new servers
-             # in case of errors, until it reaches 'wait_for' seconds timelimit
+      os_server:
+          state: present
+          auth:
+              auth_url: "{{ provisioner.auth_url }}"
+              username: "{{ provisioner.username }}"
+              password: "{{ provisioner.password }}"
+              project_name: "{{ provisioner.tenant_name }}"
+          name: "{{ item.value.name }}"
+          image: "{{ item.value.image_id }}"
+          key_name: "{{ provisioner.key_name }}"
+          flavor: "{{ item.value.flavor_id }}"
+          nics:
+            - net-id: "{{ networks.results.0.id }}"
+            - net-id: "{{ networks.results.1.id }}"
+            - net-id: "{{ networks.results.2.id }}"
+          config_drive: True
+          auto_floating_ip: "{{ provisioner.network.use_floating_ip | default(false) }}"
+          timeout: 180
+          wait: yes
       with_dict: provisioner.nodes
       register: created_nodes
 
@@ -114,14 +109,14 @@
         name: "{{ item.item.value.name }}"
         groups: "{{ item.item.value.groups if item.item.value.groups is string else item.item.value.groups| join(',') }}"
         ansible_fqdn: "{{ item.item.value.hostname }}"
-        ansible_ssh_user: "{{ item.item.value.remote_user }}"
+        ansible_user: "{{ item.item.value.remote_user }}"
         ansible_ssh_private_key_file: "{{ provisioner.key_file }}"
-        ansible_ssh_host: "{%- if item.public_ip %}{{ item.public_ip }}{%- else %}{{ item.info.addresses[provisioner.network.network_list.management.name][0].addr }}{% endif %}"
-        eth1_interface_ip: "{{ item.info.addresses[provisioner.network.network_list.data.name][0].addr }}"
+        ansible_host: "{%- if item.interface_ip is defined %}{{ item.interface_ip }}{%- else %}{{ item.openstack.addresses[provisioner.network.network_list.management.name][0].addr }}{% endif %}"
+        eth1_interface_ip: "{{ item.openstack.addresses[provisioner.network.network_list.data.name][0].addr }}"
       with_items: created_nodes.results
 
 - name: Add Floating IPs
-  hosts: net_prov
+  hosts: net_add_floatingip
   tasks:
     - name: assign floating ip to instances
       quantum_floating_ip:
@@ -138,7 +133,7 @@
     - name: Add Neutron Floating IPs to host list
       add_host:
         name: "{{ item.item.value.name }}"
-        ansible_ssh_host: "{{ item.public_ip }}"
+        ansible_host: "{{ item.public_ip }}"
       with_items: floatingip.results
       when: floatingip
 
@@ -146,15 +141,22 @@
   hosts: openstack_nodes
   gather_facts: no
   max_fail_percentage: 0
+  sudo: no
   tasks:
     - name: Wait for Reachable Nodes
-      wait_for_ssh:
-          host: "{{ hostvars[inventory_hostname].ansible_ssh_host }}"
-          user: "{{ hostvars[inventory_hostname].ansible_ssh_user }}"
-          key: "{{ hostvars[inventory_hostname].ansible_ssh_private_key_file }}"
-          timeout: "{{ provisioner.ssh_timeout | default(omit) }}"
-      sudo: no
+      wait_for:
+          host: "{{ ansible_host }}"
+          port: 22
+          search_regex: OpenSSH
+          timeout: 600
       delegate_to: localhost
+
+- name: Ensure hostname is configured properly
+  hosts: openstack_nodes
+  gather_facts: yes
+  sudo: yes
+  roles:
+    - system/set_hostname
 
 - name: Update network interfaces on nodes - OpenStack
   hosts: openstack_nodes
@@ -184,7 +186,13 @@
           line: "IPADDR={{ hostvars[inventory_hostname].eth1_interface_ip }}"
       register: update_ifcfg1
 
-    - local_action:
-        module: wait_for_ssh reboot_first=true host={{ hostvars[inventory_hostname].ansible_ssh_host }} user={{ hostvars[inventory_hostname].ansible_ssh_user }} key={{ hostvars[inventory_hostname].ansible_ssh_private_key_file }}
+    - name: reboot and wait for ssh
       when: update_ifcfgs|changed or update_ifcfg1|changed
+      delegate_to: localhost
       sudo: no
+      wait_for_ssh:
+          reboot_first: "true"
+          # delegate_to changes the context for ansible_vars
+          host: "{{ hostvars[inventory_hostname].ansible_host }}"
+          user: "{{ hostvars[inventory_hostname].ansible_user }}"
+          key: "{{ hostvars[inventory_hostname].ansible_ssh_private_key_file }}"

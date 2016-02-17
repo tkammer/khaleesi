@@ -20,6 +20,12 @@
     - yum: name={{ item }} state=present
       with_items: tester.packages
 
+    # requirements of Ansible git modules
+    - yum: name=git state=present
+
+    - yum: name=python-virtualenv state=present
+      when: "tester.pip_packages is defined and tester.pip_packages|length > 0"
+
 - name: Prepare repository with tests
   hosts: tester
   sudo: no
@@ -40,5 +46,16 @@
       - name: Install pip test requirements
         pip: name={{ item }} virtualenv=~/{{ tester.venv_dir }} virtualenv_site_packages=yes
         with_items: tester.pip_packages
+        when: "tester.pip_packages is defined and tester.pip_packages|length > 0"
+
+- name: Prepare the environment (users and tenant)
+  hosts: controller
+  sudo: no
+  gather_facts: yes
+  vars:
+      controller_auth_url: "http://{{ ansible_default_ipv4.address }}:35357/v2.0/"
+      admin_password: "{{ hostvars[provisioner.nodes.controller.name].admin_password | default('redhat') }}"
+  roles:
+      - openstack/create_users
 
 - include: "{{ tester.component }}/pre.yml"

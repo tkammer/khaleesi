@@ -14,9 +14,9 @@
         name="host0"
         groups="provisioned"
         ansible_fqdn="{{ lookup('env', 'TEST_MACHINE') }}"
-        ansible_ssh_user="{{ provisioner.remote_user }}"
+        ansible_user="{{ provisioner.remote_user }}"
         ansible_ssh_private_key_file="{{ provisioner.key_file }}"
-        ansible_ssh_host="{{ lookup('env', 'TEST_MACHINE') }}"
+        ansible_host="{{ lookup('env', 'TEST_MACHINE') }}"
 
 - name: set up host cloud environment
   hosts: host0
@@ -406,7 +406,7 @@
       fetch: src=~/ssh.config.ansible dest={{ base_dir }}/khaleesi/ssh.config.ansible flat=yes
 
     - name: change mod for ssh.config.ansible
-      local_action: shell chmod 755 {{ base_dir }}/khaleesi/ssh.config.ansible
+      shell: chmod 755 {{ base_dir }}/khaleesi/ssh.config.ansible
 
     - name: copy id_rsa key back to the slave
       fetch: src=~/.ssh/id_rsa dest={{ base_dir }}/khaleesi/id_rsa_undercloud_instance flat=yes

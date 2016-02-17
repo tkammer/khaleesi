@@ -35,3 +35,4 @@ doc/_build/
 fence_xvm.key
 vm-host-table
 tools/kcli/etc/kcli.cfg
+*.swp

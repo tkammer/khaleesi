@@ -22,10 +22,10 @@
       yum:  name=createrepo state=present
 
     - name: create repo folder
-      file: path=/home/{{ ansible_ssh_user }}/dist-git/ state=directory
+      file: path=/home/{{ ansible_user }}/dist-git/ state=directory
 
     - name: copy the generated rpms
-      copy: src={{ item }} dest=/home/{{ ansible_ssh_user }}/dist-git/{{ patch.dist_git.name }}/
+      copy: src={{ item }} dest=/home/{{ ansible_user }}/dist-git/{{ patch.dist_git.name }}/
       with_fileglob:
        - "{{ lookup('env', 'PWD') }}/generated_rpms/*.rpm"
 
@@ -36,7 +36,7 @@
 
     - name: Create local repo for patched rpm
       sudo: yes
-      shell: "createrepo /home/{{ ansible_ssh_user }}/dist-git/{{ patch.dist_git.name }}"
+      shell: "createrepo /home/{{ ansible_user }}/dist-git/{{ patch.dist_git.name }}"
       when: "{{ hostvars['localhost'].rpm_build_rc }} == 0"
 
 - include: install.yml

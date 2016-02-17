@@ -20,7 +20,6 @@
             provisioner-site-user: 'rdo'
             provisioner-distro: '{provisioner-distro}'
             provisioner-distro-version: '{provisioner-distro-version}'
-            provisioner-options: 'skip_provision'
             product: '{product}'
             product-version: '{product-version}'
             product-version-repo: '{product-version-repo}'
@@ -47,6 +46,8 @@
         - tests-publishers
         - email:
             recipients: whayutin@redhat.com adarazs@redhat.com
+    triggers:
+        - timed: '@daily'
 
 - project:
     name: rdo-manager-centosci-feature-jobs

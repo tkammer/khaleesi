@@ -29,9 +29,9 @@
             if item.item.value.groups is string
             else item.item.value.groups| join(',') }}"
         ansible_fqdn="{{ item.hosts.0.hostname }}"
-        ansible_ssh_user="{{ provisioner.remote_user }}"
+        ansible_user="{{ provisioner.remote_user }}"
         ansible_ssh_private_key_file="{{ provisioner.key_file }}"
-        ansible_ssh_host="{{ item.hosts.0.hostname }}"
+        ansible_host="{{ item.hosts.0.hostname }}"
       with_items: provisioned_nodes.results
 
 - name: wait for hosts to get reachable
@@ -39,6 +39,9 @@
   gather_facts: no
   max_fail_percentage: 0
   tasks:
-    - local_action:
-        module: wait_for_ssh host={{ hostvars[inventory_hostname].ansible_ssh_host }} user=root key={{ hostvars[inventory_hostname].ansible_ssh_private_key_file }}
-      sudo: no
+      delegate_to: localhost
+      wait_for_ssh:
+          host: "{{ hostvars[inventory_hostname].ansible_host }}"
+          user: root
+          key: "{{ hostvars[inventory_hostname].ansible_ssh_private_key_file }}"
+  sudo: no

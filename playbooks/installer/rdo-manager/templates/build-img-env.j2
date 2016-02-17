@@ -1,8 +1,11 @@
 export DIB_LOCAL_IMAGE={{ distro.images[distro.name][distro.full_version].guest_image_name }}
 
+{% if product.name == 'rdo' %}
+export RDO_RELEASE={{ product.full_version }}
+{%endif %}
+
 {% if product.repo_type is defined and product.repo_type in ["poodle", "puddle"] %}
 export DIB_YUM_REPO_CONF="{{installer.dib_dir}}/rhos-release-{{product.repo.core_product_version}}-director.repo {{installer.dib_dir}}/rhos-release-{{product.repo.core_product_version}}.repo {{installer.dib_dir}}/rhos-release-rhel-{{distro.full_version}}.repo"
-export DIB_LOCAL_IMAGE={{ distro.images[distro.name][ansible_distribution_version].guest_image_name }}
 export USE_DELOREAN_TRUNK=0
 export NODE_DIST=rhel7
 export RUN_RHOS_RELEASE=1
@@ -31,4 +34,8 @@ export USE_DELOREAN_TRUNK=1
 export DELOREAN_TRUNK_REPO="{{ product.repo['delorean'][ansible_distribution][distro.full_version] }}/current/"
 export DELOREAN_REPO_FILE="{{ product.repo.delorean.repo_file }}"
 export NODE_DIST=centos7
+{%endif %}
+
+{% if installer.proxy != 'none' %}
+export http_proxy={{ installer.http_proxy_url }}
 {%endif %}
