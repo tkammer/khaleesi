@@ -1,5 +1,3 @@
-import argparse
-import sys
 from os import path
 
 import ansible.color
@@ -8,7 +6,9 @@ import ansible.playbook
 import ansible.utils
 from ansible import callbacks
 
-from kcli import conf, exceptions, utils
+from kcli import conf, exceptions, logger
+
+LOG = logger.LOG
 
 VERBOSITY = 0
 HOSTS_FILE = "hosts"
@@ -140,11 +140,11 @@ def execute_ansible(playbook, args):
 
 
 def ansible_wrapper(args):
-    """Wraps the 'anisble-playbook' CLI."""
+    """ Wraps the 'ansible-playbook' CLI. """
 
     playbooks = [p for p in PLAYBOOKS if getattr(args, p, False)]
     if not playbooks:
-        parser.error("No playbook to execute (%s)" % PLAYBOOKS)
+        LOG.error("No playbook to execute (%s)" % PLAYBOOKS)
 
     for playbook in (p for p in PLAYBOOKS if getattr(args, p, False)):
         print "Executing Playbook: %s" % playbook
@@ -152,23 +152,3 @@ def ansible_wrapper(args):
             execute_ansible(playbook, args)
         except Exception:
             raise exceptions.IRPlaybookFailedException(playbook)
-
-
-def main():
-    args = parser.parse_args()
-    args.func(args)
-
-
-parser = argparse.ArgumentParser()
-parser.add_argument('-v', '--verbose', default=VERBOSITY, action="count",
-                    help="verbose mode (-vvv for more,"
-                         " -vvvv to enable connection debugging)")
-parser.add_argument("--settings",
-                    default=conf.KCLI_SETTINGS_YML,
-                    type=lambda file_path: utils.normalize_file(file_path),
-                    help="settings file to use. default: %s"
-                         % conf.KCLI_SETTINGS_YML)
-subparsers = parser.add_subparsers(metavar="COMMAND")
-
-if __name__ == '__main__':
-    sys.exit(main())
