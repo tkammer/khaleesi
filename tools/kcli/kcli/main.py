@@ -3,6 +3,8 @@
 import logging
 import os
 
+import yaml
+
 # logger creation is first thing to be done
 from kcli import logger
 
@@ -11,6 +13,7 @@ from kcli import options as kcli_options
 from kcli.execute import PLAYBOOKS
 from kcli import parse
 from kcli import utils
+import kcli.yamls
 
 LOG = logger.LOG
 CONF = conf.config
@@ -52,11 +55,11 @@ def main():
 
         LOG.debug("All settings files to be loaded:\n%s" % settings_files)
 
-        settings = utils.generate_settings(settings_files,
-                                           args.extra_vars)
+        kcli.yamls.Lookup.settings = utils.generate_settings(settings_files,
+                                                             args.extra_vars)
 
-        # todo: move into Lookup
-        output = utils.lookup2lookup(settings)
+        output = yaml.safe_dump(kcli.yamls.Lookup.settings,
+                                default_flow_style=False)
 
         if args.output_file:
             with open(args.output_file, 'w') as output_file:
