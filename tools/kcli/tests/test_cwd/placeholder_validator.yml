@@ -1,0 +1,5 @@
+---
+place:
+    holder:
+        validtaor:
+            !placeholder "tester for '!placeholder' tag"
