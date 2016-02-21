@@ -1,0 +1,19 @@
+[DEFAULTS]
+INFRARED_DIR = /home/aopincar/Git/Repos/Infrared
+SETTINGS_DIR = %(INFRARED_DIR)s/settings
+MODULES_DIR = %(INFRARED_DIR)s/library
+ROLES_DIR = %(INFRARED_DIR)s/roles
+PLAYBOOKS_DIR = %(INFRARED_DIR)s/playbooks
+CLI_SETTINGS_YML = cli_settings.yml
+
+[ROOT_OPTS]
+provisioner
+installer
+tester
+distro
+product
+
+[AUTO_EXEC_OPTS]
+provision
+install
+test

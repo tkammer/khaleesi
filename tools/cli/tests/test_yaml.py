@@ -10,8 +10,8 @@ our_cwd_setup = utils.our_cwd_setup
 
 
 def test_unsupported_yaml_constructor(our_cwd_setup):
-    from kcli.utils import update_settings
-    from kcli.exceptions import IRYAMLConstructorError
+    from cli.utils import update_settings
+    from cli.exceptions import IRYAMLConstructorError
     tester_file = 'IRYAMLConstructorError.yml'
     settings = configure.Configuration.from_dict({})
     with pytest.raises(IRYAMLConstructorError):
@@ -19,9 +19,9 @@ def test_unsupported_yaml_constructor(our_cwd_setup):
 
 
 def test_placeholder_validator(our_cwd_setup):
-    from kcli.utils import update_settings
-    from kcli.exceptions import IRPlaceholderException
-    from kcli.yamls import Placeholder
+    from cli.utils import update_settings
+    from cli.exceptions import IRPlaceholderException
+    from cli.yamls import Placeholder
 
     injector = 'placeholder_injector.yml'
     overwriter = 'placeholder_overwriter.yml'

@@ -1,6 +1,6 @@
 from argparse import ArgumentParser, RawTextHelpFormatter
 
-from kcli import conf, execute, utils
+from cli import conf, execute, utils
 
 
 def create_parser(options_trees):
@@ -9,7 +9,7 @@ def create_parser(options_trees):
     :param options_trees: An iterable with OptionsTree objects
     :return: Namespace object
     """
-    parser = ArgumentParser(prog="kcli",
+    parser = ArgumentParser(prog="cli",
                             formatter_class=RawTextHelpFormatter)
 
     sub_parsers = parser.add_subparsers()
@@ -40,7 +40,7 @@ def create_parser(options_trees):
                                 type=lambda file_path: utils.normalize_file(
                                     file_path),
                                 help="settings file to use. default: %s"
-                                     % conf.KCLI_SETTINGS_YML)
+                                     % conf.CLI_SETTINGS_YML)
     execute_parser.set_defaults(func=execute.ansible_wrapper)
     execute_parser.set_defaults(which='execute')
 

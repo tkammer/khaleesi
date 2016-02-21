@@ -2,7 +2,7 @@ from pip import req
 from setuptools import setup, find_packages
 from os.path import join, dirname, abspath
 
-import kcli
+import cli
 
 # parse_requirements() returns generator of pip.req.InstallRequirement objects
 install_reqs = req.parse_requirements('requirements.txt', session=False)
@@ -13,12 +13,12 @@ reqs = [str(ir.req) for ir in install_reqs]
 
 prj_dir = dirname(abspath(__file__))
 setup(
-    name='kcli',
-    version=kcli.__VERSION__,
+    name='cli',
+    version=cli.__VERSION__,
     packages=find_packages(),
     long_description=open(join(prj_dir, 'README.rst')).read(),
     entry_points={
-        'console_scripts': ['kcli = kcli.main:main']
+        'console_scripts': ['cli = cli.main:main']
     },
     install_requires=reqs,
     author='Yair Fried',
