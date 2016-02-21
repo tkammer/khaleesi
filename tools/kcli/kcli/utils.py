@@ -3,6 +3,7 @@ This module provide some general helper methods
 """
 
 import os
+import re
 
 import configure
 import yaml
@@ -73,6 +74,12 @@ def update_settings(settings, file_path):
 
     try:
         loaded_file = configure.Configuration.from_file(file_path).configure()
+        placeholders_list = kcli.yamls.Placeholder.placeholders_list
+        for placeholder in placeholders_list[::-1]:
+            if placeholders_list[-1].file_path is None:
+                placeholder.file_path = file_path
+            else:
+                break
     except yaml.constructor.ConstructorError as e:
         raise exceptions.IRYAMLConstructorError(e, file_path)
 

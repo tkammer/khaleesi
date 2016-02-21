@@ -58,6 +58,7 @@ def main():
         kcli.yamls.Lookup.settings = utils.generate_settings(settings_files,
                                                              args.extra_vars)
 
+        LOG.debug("Dumping settings...")
         output = yaml.safe_dump(kcli.yamls.Lookup.settings,
                                 default_flow_style=False)
 
