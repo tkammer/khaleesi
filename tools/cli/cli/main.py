@@ -6,14 +6,14 @@ import os
 import yaml
 
 # logger creation is first thing to be done
-from kcli import logger
+from cli import logger
 
-from kcli import conf
-from kcli import options as kcli_options
-from kcli.execute import PLAYBOOKS
-from kcli import parse
-from kcli import utils
-import kcli.yamls
+from cli import conf
+from cli import options as cli_options
+from cli import execute
+from cli import parse
+from cli import utils
+import cli.yamls
 
 LOG = logger.LOG
 CONF = conf.config
@@ -26,7 +26,7 @@ def main():
         CONF.get('DEFAULTS', 'SETTINGS_DIR'))
 
     for option in CONF.options('ROOT_OPTS'):
-        options_trees.append(kcli_options.OptionsTree(settings_dir, option))
+        options_trees.append(cli_options.OptionsTree(settings_dir, option))
 
     parser = parse.create_parser(options_trees)
     args = parser.parse_args()
@@ -55,11 +55,11 @@ def main():
 
         LOG.debug("All settings files to be loaded:\n%s" % settings_files)
 
-        kcli.yamls.Lookup.settings = utils.generate_settings(settings_files,
-                                                             args.extra_vars)
+        cli.yamls.Lookup.settings = utils.generate_settings(settings_files,
+                                                            args.extra_vars)
 
         LOG.debug("Dumping settings...")
-        output = yaml.safe_dump(kcli.yamls.Lookup.settings,
+        output = yaml.safe_dump(cli.yamls.Lookup.settings,
                                 default_flow_style=False)
 
         if args.output_file:
@@ -76,9 +76,10 @@ def main():
     if exec_playbook:
         if args.which == 'execute':
             execute_args = parser.parse_args()
-        elif args.which not in PLAYBOOKS:
+        elif args.which not in execute.PLAYBOOKS:
             LOG.debug("No playbook named \"%s\", nothing to execute.\n"
-                      "Please choose from: %s" % (args.which, PLAYBOOKS))
+                      "Please choose from: %s" % (args.which,
+                                                  execute.PLAYBOOKS))
             return
         else:
             args_list = ["execute"]

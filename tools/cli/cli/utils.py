@@ -8,10 +8,10 @@ import re
 import configure
 import yaml
 
-import kcli.yamls
-import kcli.conf
-from kcli import exceptions
-from kcli import logger
+import cli.yamls
+import cli.conf
+from cli import exceptions
+from cli import logger
 
 LOG = logger.LOG
 
@@ -51,7 +51,7 @@ def validate_settings_dir(settings_dir=None):
             exist
     """
     settings_dir = settings_dir or os.environ.get(
-        kcli.conf.KHALEESI_DIR_ENV_VAR)
+        cli.conf.INFRARED_DIR_ENV_VAR)
 
     if not os.path.exists(settings_dir):
         raise exceptions.IRFileNotFoundException(
@@ -74,7 +74,7 @@ def update_settings(settings, file_path):
 
     try:
         loaded_file = configure.Configuration.from_file(file_path).configure()
-        placeholders_list = kcli.yamls.Placeholder.placeholders_list
+        placeholders_list = cli.yamls.Placeholder.placeholders_list
         for placeholder in placeholders_list[::-1]:
             if placeholders_list[-1].file_path is None:
                 placeholder.file_path = file_path

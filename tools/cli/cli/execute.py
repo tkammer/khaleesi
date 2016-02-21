@@ -6,7 +6,7 @@ import ansible.playbook
 import ansible.utils
 from ansible import callbacks
 
-from kcli import conf, exceptions, logger
+from cli import conf, exceptions, logger
 
 LOG = logger.LOG
 
