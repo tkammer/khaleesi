@@ -1,6 +1,6 @@
 import os
 
-from tests.test_cwd import utils
+from test_cwd import utils
 
 our_cwd_setup = utils.our_cwd_setup
 

@@ -43,5 +43,5 @@ def test_placeholder_validator(our_cwd_setup):
                                os.path.join(utils.TESTS_CWD, overwriter))
 
     assert settings['place']['holder'][
-               'validator'] == "'!placeholder' has been overwritten"
+        'validator'] == "'!placeholder' has been overwritten"
     yaml.safe_dump(settings, default_flow_style=False)

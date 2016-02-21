@@ -13,12 +13,12 @@ reqs = [str(ir.req) for ir in install_reqs]
 
 prj_dir = dirname(abspath(__file__))
 setup(
-    name='cli',
+    name='infrared',
     version=cli.__VERSION__,
     packages=find_packages(),
     long_description=open(join(prj_dir, 'README.rst')).read(),
     entry_points={
-        'console_scripts': ['cli = cli.main:main']
+        'console_scripts': ['infrared = cli.main:main']
     },
     install_requires=reqs,
     author='Yair Fried',
